@@ -8,6 +8,7 @@ public class NoMatchException extends RuntimeException {
     private final String lexeme;
 
     public NoMatchException(TokenType tokenType, String lexeme) {
+        super(String.format("%s does not match %s", tokenType, lexeme));
         this.tokenType = tokenType;
         this.lexeme = lexeme;
     }

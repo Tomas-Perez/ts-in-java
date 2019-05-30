@@ -30,4 +30,30 @@ public class AutomataFactoryTest {
         Automata automata = factory.automataFor("l");
         automata.consume('x');
     }
+
+    @Test
+    public void infiniteAutomataShouldAcceptWhenGivenASingleAcceptableValue() {
+        AutomataFactory factory = new AutomataFactory();
+        Automata automata = factory.infiniteRegexAutomata("l");
+        automata.consume('l');
+        Assert.assertTrue(automata.acceptable());
+    }
+
+    @Test
+    public void infiniteAutomataShouldAcceptWhenGivenMultipleAcceptableValues() {
+        AutomataFactory factory = new AutomataFactory();
+        Automata automata = factory.infiniteRegexAutomata("l");
+        automata.consume('l');
+        automata.consume('l');
+        automata.consume('l');
+        automata.consume('l');
+        Assert.assertTrue(automata.acceptable());
+    }
+
+    @Test
+    public void infiniteAutomataShouldNotAcceptWhenGivenNoValues() {
+        AutomataFactory factory = new AutomataFactory();
+        Automata automata = factory.infiniteRegexAutomata("l");
+        Assert.assertFalse(automata.acceptable());
+    }
 }

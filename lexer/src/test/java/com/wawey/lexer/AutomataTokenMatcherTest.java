@@ -23,6 +23,16 @@ public class AutomataTokenMatcherTest {
         matcher.match('l');
         matcher.match('e');
         matcher.match('t');
+        matcher.match('t');
+        matcher.match('e');
+        matcher.match('l');
         Assert.assertEquals(expected, matcher.getBasicToken());
+    }
+
+    @Test(expected = NoMatchException.class)
+    public void shouldThrowNoMatchExceptionWhenGettingUncompleteToken() {
+        Automata letAutomata = new AutomataFactory().automataFor("let");
+        TokenMatcher matcher = new AutomataTokenMatcher(TokenType.LET, letAutomata);
+        matcher.getBasicToken();
     }
 }

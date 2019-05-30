@@ -62,4 +62,14 @@ public class TokenImpl implements Token {
     public int hashCode() {
         return Objects.hash(type, lexeme, startColumn, line);
     }
+
+    @Override
+    public String toString() {
+        return String.format("Token(type=%s, lexeme=%s, col=%d, line=%d)", type, lexeme, startColumn, line);
+    }
+
+    public static TokenImpl forFixedToken(TokenType type, int startColumn, int line) {
+        if (!type.isFixed()) throw new IllegalStateException(type.toString() + " is not a fixed token");
+        return new TokenImpl(type, type.getLexeme(), startColumn, line);
+    }
 }

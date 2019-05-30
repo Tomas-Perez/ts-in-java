@@ -21,4 +21,8 @@ public class Transition {
     AutomataState nextState() {
         return stateSupplier.get();
     }
+
+    public static Transition selfTransition(CharAcceptor acceptor) {
+        return new Transition(acceptor, () -> null);
+    }
 }

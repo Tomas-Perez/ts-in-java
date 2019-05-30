@@ -31,7 +31,10 @@ public class AutomataStateImpl implements AutomataState {
         return transitions.stream()
                 .filter(t -> t.consumes(c))
                 .findFirst()
-                .map(Transition::nextState)
+                .map(t -> {
+                    AutomataState next = t.nextState();
+                    return next == null? this : next;
+                })
                 .orElseThrow(NoTransitionException::new);
     }
 
