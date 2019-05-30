@@ -6,4 +6,5 @@ package com.wawey.lexer;
 public interface Automata {
     boolean acceptable();
     void consume(char c);
+    void reset();
 }

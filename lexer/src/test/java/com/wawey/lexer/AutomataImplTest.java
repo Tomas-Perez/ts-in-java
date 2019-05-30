@@ -21,6 +21,18 @@ public class AutomataImplTest {
         Assert.assertTrue(letAutomata.acceptable());
     }
 
+    @Test
+    public void letAutomataShouldNotAcceptWhenGivenLE() {
+        AutomataState letConsumed = AutomataStateImpl.acceptanceState();
+        AutomataState leConsumed = AutomataStateImpl.intermediateState(new Transition(new SingleCharAcceptor('t'), () -> letConsumed));
+        AutomataState lConsumed = AutomataStateImpl.intermediateState(new Transition(new SingleCharAcceptor('e'), () -> leConsumed));
+        AutomataState initial = AutomataStateImpl.intermediateState(new Transition(new SingleCharAcceptor('l'), () -> lConsumed));
+        Automata letAutomata = new AutomataImpl(initial);
+        letAutomata.consume('l');
+        letAutomata.consume('e');
+        Assert.assertFalse(letAutomata.acceptable());
+    }
+
     @Test(expected = NoTransitionException.class)
     public void lAutomataShouldFailWhenGivenX() {
         AutomataState lConsumed = AutomataStateImpl.acceptanceState();
