@@ -1,5 +1,7 @@
 package com.wawey.lexer;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +10,7 @@ public class LexerBuilder {
     private static final AutomataFactory factory = new AutomataFactory();
 
     static Lexer buildTSLexer() {
-        List<TokenMatcher> tokenMatchers =
+        List<TokenMatcher> keywordMatchers =
                 Arrays.stream(TokenType.values())
                         .filter(TokenType::isFixed)
                         .map(t -> new BasicToken(t, t.getLexeme()))
@@ -30,17 +32,17 @@ public class LexerBuilder {
         TokenMatcher spaceMatcher = new AutomataTokenMatcher(TokenType.SPACE, factory.infiniteRegexAutomata(" "));
         TokenMatcher newLineMatcher = new AutomataTokenMatcher(TokenType.NEWLINE, factory.singleCharAutomata('\n'));
 
-        tokenMatchers.addAll(
-                Arrays.asList(
-                        idMatcher,
-                        numLiteralMatcher,
-                        singleQuoteStrLiteralMatcher,
-                        doubleQuoteStrLiteralMatcher,
-                        spaceMatcher,
-                        newLineMatcher
-                )
-        );
+        List<TokenMatcher> matchers =
+                ImmutableList.<TokenMatcher>builder()
+                        .addAll(keywordMatchers)
+                        .add(idMatcher)
+                        .add(numLiteralMatcher)
+                        .add(singleQuoteStrLiteralMatcher)
+                        .add(doubleQuoteStrLiteralMatcher)
+                        .add(spaceMatcher)
+                        .add(newLineMatcher)
+                        .build();
 
-        return new MatcherLexer(tokenMatchers);
+        return new MatcherLexer(matchers);
     }
 }
