@@ -1,7 +1,8 @@
 package com.wawey.lexer;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,50 +19,40 @@ public class MatcherLexer implements Lexer {
 
     @Override
     public List<Token> lex(String input) {
-        List<Token> result = new LinkedList<>();
-        int line = 1;
-        int startColumn = 1;
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            List<TokenMatcher> alreadyMatching = matchers.stream()
-                    .filter(TokenMatcher::isMatching)
-                    .collect(Collectors.toList());
-            if (alreadyMatching.size() == 0) {
-                alreadyMatching = matchers;
-            }
-            List<TokenMatcher> matchedCurrentChar = alreadyMatching.stream()
-                    .filter(m -> m.match(c))
-                    .collect(Collectors.toList());
-            if (matchedCurrentChar.size() == 0 && alreadyMatching.size() == 0) {
-                throw new LexicalError("Unknown character: " + c);
-            } else if (matchedCurrentChar.size() == 0) {
-                Token token = buildToken(line, startColumn, alreadyMatching);
-                switch (token.getType()) {
-                    case SPACE:
-                        startColumn += token.getLexeme().length();
-                        break;
-                    case NEWLINE:
-                        line++;
-                        startColumn = 1;
-                        break;
-                    default:
-                        result.add(token);
-                        startColumn += token.getLexeme().length();
-                        break;
+        LexerState state = LexerState.initialState();
+        for (char c : input.toCharArray()) {
+            boolean tryAgain;
+            do {
+                tryAgain = false;
+                List<TokenMatcher> alreadyMatching = getAlreadyMatching();
+                List<TokenMatcher> matchersForChar = alreadyMatching.stream()
+                        .filter(m -> m.match(c))
+                        .collect(Collectors.toList());
+                if (matchersForChar.size() == 0 && alreadyMatching.size() == 0) {
+                    throw new LexicalError("Unknown character: " + c);
+                } else if (matchersForChar.size() == 0) {
+                    Token token = buildToken(state.line, state.column, alreadyMatching);
+                    state = state.addToken(token);
+                    tryAgain = true;
                 }
-                i--;
-            }
+            } while (tryAgain);
         }
         List<TokenMatcher> alreadyMatching = matchers.stream()
                 .filter(TokenMatcher::isMatching)
                 .collect(Collectors.toList());
         if (alreadyMatching.size() > 0) {
-            Token token = buildToken(line, startColumn, alreadyMatching);
-            if (token.getType() != TokenType.SPACE && token.getType() != TokenType.NEWLINE) {
-                result.add(token);
-            }
+            Token token = buildToken(state.line, state.column, alreadyMatching);
+            state = state.addToken(token);
         }
-        return result;
+        return state.result;
+    }
+
+    private List<TokenMatcher> getAlreadyMatching() {
+        List<TokenMatcher> alreadyMatching = matchers.stream()
+                .filter(TokenMatcher::isMatching)
+                .collect(Collectors.toList());
+        if (alreadyMatching.size() == 0) alreadyMatching = matchers;
+        return alreadyMatching;
     }
 
     private Token buildToken(int line, int startColumn, List<TokenMatcher> alreadyMatching) {
@@ -69,5 +60,37 @@ public class MatcherLexer implements Lexer {
         BasicToken basicToken = matcher.getBasicToken();
         matchers.forEach(TokenMatcher::reset);
         return new TokenImpl(basicToken, startColumn, line);
+    }
+
+    private static class LexerState {
+        final int line;
+        final int column;
+        final List<Token> result;
+
+        LexerState(int line, int column, List<Token> result) {
+            this.line = line;
+            this.column = column;
+            this.result = result;
+        }
+
+        LexerState addToken(Token token) {
+            switch (token.getType()) {
+                case SPACE:
+                    return new LexerState(line, column + token.getLexeme().length(), result);
+                case NEWLINE:
+                    return new LexerState(line + 1, 1, result);
+                default:
+                    final ImmutableList<Token> newResult =
+                            ImmutableList.<Token>builder()
+                                    .addAll(result)
+                                    .add(token)
+                                    .build();
+                    return new LexerState(line, column + token.getLexeme().length(), newResult);
+            }
+        }
+
+        static LexerState initialState() {
+            return new LexerState(1, 1, ImmutableList.of());
+        }
     }
 }

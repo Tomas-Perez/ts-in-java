@@ -11,13 +11,8 @@ public class AutomataTokenMatcher implements TokenMatcher {
     }
 
     @Override
-    public int matchLength() {
-        return match.length();
-    }
-
-    @Override
     public boolean isMatching() {
-        return matchLength() > 0;
+        return match.length() > 0;
     }
 
     @Override
