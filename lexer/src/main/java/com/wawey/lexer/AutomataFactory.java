@@ -28,19 +28,6 @@ public class AutomataFactory {
     }
 
     public Automata delimitedWordAutomata(final char delimiter) {
-        final CharAcceptor delimiterAcceptor = (c) -> c == delimiter;
-        final AutomataState finalState = AutomataStateImpl.acceptanceState();
-        final AutomataState withinDelimiters = AutomataStateImpl.intermediateState(
-                Transition.selfTransition((c) -> c != delimiter),
-                new Transition(delimiterAcceptor, () -> finalState)
-        );
-        final AutomataState initialState = AutomataStateImpl.intermediateState(
-                new Transition(delimiterAcceptor, () -> withinDelimiters)
-        );
-        return new AutomataImpl(initialState);
-    }
-
-    public Automata delimitedWordAutomata2(final char delimiter) {
         return new LinkedAutomata.Builder()
                 .andThen(singleCharAutomata(delimiter))
                 .maybeThen(
