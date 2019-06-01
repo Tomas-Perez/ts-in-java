@@ -3,7 +3,7 @@ package com.wawey.lexer;
 /**
  * @author Tomas Perez Molina
  */
-enum TokenType {
+public enum TokenType {
     STRING_LITERAL(),
     NUMBER_LITERAL(),
     IDENTIFIER(),

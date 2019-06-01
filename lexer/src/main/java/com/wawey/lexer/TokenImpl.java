@@ -5,17 +5,17 @@ import java.util.Objects;
 public class TokenImpl implements Token {
     private final TokenType type;
     private final String lexeme;
-    private final int startColumn;
     private final int line;
+    private final int startColumn;
 
-    public TokenImpl(BasicToken basicToken, int startColumn, int line) {
+    public TokenImpl(BasicToken basicToken, int line, int startColumn) {
         this.type = basicToken.getType();
         this.lexeme = basicToken.getLexeme();
         this.startColumn = startColumn;
         this.line = line;
     }
 
-    public TokenImpl(TokenType type, String lexeme, int startColumn, int line) {
+    public TokenImpl(TokenType type, String lexeme, int line, int startColumn) {
         this.type = type;
         this.lexeme = lexeme;
         this.startColumn = startColumn;
@@ -65,11 +65,11 @@ public class TokenImpl implements Token {
 
     @Override
     public String toString() {
-        return String.format("Token(type=%s, lexeme=%s, col=%d, line=%d)", type, lexeme, startColumn, line);
+        return String.format("Token(type=%s, lexeme=%s, line=%d, col=%d)", type, lexeme, line, startColumn);
     }
 
-    public static TokenImpl forFixedToken(TokenType type, int startColumn, int line) {
+    public static TokenImpl forFixedToken(TokenType type, int line, int startColumn) {
         if (!type.isFixed()) throw new IllegalStateException(type.toString() + " is not a fixed token");
-        return new TokenImpl(type, type.getLexeme(), startColumn, line);
+        return new TokenImpl(type, type.getLexeme(), line, startColumn);
     }
 }

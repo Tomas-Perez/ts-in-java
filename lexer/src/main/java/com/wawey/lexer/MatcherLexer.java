@@ -59,7 +59,7 @@ public class MatcherLexer implements Lexer {
         TokenMatcher matcher = alreadyMatching.get(0);
         BasicToken basicToken = matcher.getBasicToken();
         matchers.forEach(TokenMatcher::reset);
-        return new TokenImpl(basicToken, startColumn, line);
+        return new TokenImpl(basicToken, line, startColumn);
     }
 
     private static class LexerState {

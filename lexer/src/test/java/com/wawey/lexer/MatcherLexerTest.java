@@ -24,10 +24,10 @@ public class MatcherLexerTest {
         Lexer letLexer = new MatcherLexer(matcher);
         List<Token> expected = Arrays.asList(
                 new TokenImpl(TokenType.LET, "let", 1, 1),
-                new TokenImpl(TokenType.LET, "let", 4, 1),
-                new TokenImpl(TokenType.LET, "let", 7, 1),
-                new TokenImpl(TokenType.LET, "let", 10, 1),
-                new TokenImpl(TokenType.LET, "let", 13, 1)
+                new TokenImpl(TokenType.LET, "let", 1, 4),
+                new TokenImpl(TokenType.LET, "let", 1, 7),
+                new TokenImpl(TokenType.LET, "let", 1, 10),
+                new TokenImpl(TokenType.LET, "let", 1, 13)
         );
         Assert.assertEquals(expected, letLexer.lex("letletletletlet"));
     }
@@ -41,10 +41,10 @@ public class MatcherLexerTest {
         Lexer letLexer = new MatcherLexer(letMatcher, newLineMatcher);
         List<Token> expected = Arrays.asList(
                 new TokenImpl(TokenType.LET, "let", 1, 1),
-                new TokenImpl(TokenType.LET, "let", 4, 1),
-                new TokenImpl(TokenType.LET, "let", 1, 2),
-                new TokenImpl(TokenType.LET, "let", 4, 2),
-                new TokenImpl(TokenType.LET, "let", 7, 2)
+                new TokenImpl(TokenType.LET, "let", 1, 4),
+                new TokenImpl(TokenType.LET, "let", 2, 1),
+                new TokenImpl(TokenType.LET, "let", 2, 4),
+                new TokenImpl(TokenType.LET, "let", 2, 7)
         );
         Assert.assertEquals(expected, letLexer.lex("letlet\nletletlet"));
     }
@@ -56,7 +56,7 @@ public class MatcherLexerTest {
         TokenMatcher letMatcher = new AutomataTokenMatcher(TokenType.LET, letAutomata);
         TokenMatcher newLineMatcher = new AutomataTokenMatcher(TokenType.NEWLINE, newLineAutomata);
         Lexer letLexer = new MatcherLexer(letMatcher, newLineMatcher);
-        List<Token> expected = Collections.singletonList(new TokenImpl(TokenType.LET, "let", 1, 2));
+        List<Token> expected = Collections.singletonList(new TokenImpl(TokenType.LET, "let", 2, 1));
         Assert.assertEquals(expected, letLexer.lex("\nlet\n"));
     }
 
