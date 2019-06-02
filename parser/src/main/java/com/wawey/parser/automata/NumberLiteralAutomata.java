@@ -4,45 +4,17 @@ import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.ast.ASTNode;
-import com.wawey.parser.ast.LiteralNode;
 import com.wawey.parser.ast.NumberLiteralNode;
 
 import java.util.Stack;
 
-public class NumberLiteralAutomata implements ParserAutomata {
-    private Stack<ASTNode> stack = new Stack<>();
-    private ParserAutomataState currentState;
+public class NumberLiteralAutomata extends ParserAutomataImpl {
 
     public NumberLiteralAutomata() {
-        this.currentState = new InitialState();
+        super(new InitialState());
     }
 
-    @Override
-    public void consume(Token token) {
-        currentState = currentState.transition(token, stack);
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return stack.peek();
-    }
-
-    @Override
-    public void reset() {
-        currentState = new InitialState();
-    }
-
-    @Override
-    public boolean acceptable() {
-        return currentState.isAcceptable();
-    }
-
-    @Override
-    public boolean accepts(Token token) {
-        return currentState.accepts(token);
-    }
-
-    private class InitialState implements ParserAutomataState {
+    private static class InitialState implements ParserAutomataState {
         @Override
         public boolean isAcceptable() {
             return false;
@@ -67,7 +39,7 @@ public class NumberLiteralAutomata implements ParserAutomata {
         }
     }
 
-    private class AcceptedState implements ParserAutomataState {
+    private static class AcceptedState implements ParserAutomataState {
         @Override
         public boolean isAcceptable() {
             return true;

@@ -8,40 +8,13 @@ import com.wawey.parser.ast.IdentifierNode;
 
 import java.util.Stack;
 
-public class IdentifierAutomata implements ParserAutomata {
-    private Stack<ASTNode> stack = new Stack<>();
-    private ParserAutomataState currentState;
+public class IdentifierAutomata extends ParserAutomataImpl {
 
     public IdentifierAutomata() {
-        this.currentState = new InitialState();
+        super(new InitialState());
     }
 
-    @Override
-    public void consume(Token token) {
-        currentState = currentState.transition(token, stack);
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return stack.peek();
-    }
-
-    @Override
-    public void reset() {
-        currentState = new InitialState();
-    }
-
-    @Override
-    public boolean accepts(Token token) {
-        return currentState.accepts(token);
-    }
-
-    @Override
-    public boolean acceptable() {
-        return currentState.isAcceptable();
-    }
-
-    private class InitialState implements ParserAutomataState {
+    private static class InitialState implements ParserAutomataState {
         @Override
         public boolean isAcceptable() {
             return false;
@@ -65,7 +38,7 @@ public class IdentifierAutomata implements ParserAutomata {
         }
     }
 
-    private class AcceptedState implements ParserAutomataState {
+    private static class AcceptedState implements ParserAutomataState {
         @Override
         public boolean isAcceptable() {
             return true;

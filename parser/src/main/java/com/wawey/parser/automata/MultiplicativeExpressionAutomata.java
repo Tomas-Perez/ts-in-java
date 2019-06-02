@@ -12,27 +12,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class MultiplicativeExpressionAutomata implements ParserAutomata {
-    private final Stack<ASTNode> stack = new Stack<>();
-    private ParserAutomataState currentState;
+public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
 
     public MultiplicativeExpressionAutomata() {
-        this.currentState = new InitialState();
-    }
-
-    @Override
-    public void consume(Token token) {
-        currentState = currentState.transition(token, stack);
-    }
-
-    @Override
-    public boolean acceptable() {
-        return currentState.isAcceptable();
-    }
-
-    @Override
-    public boolean accepts(Token token) {
-        return currentState.accepts(token);
+        super(new InitialState());
     }
 
     @Override
@@ -40,12 +23,7 @@ public class MultiplicativeExpressionAutomata implements ParserAutomata {
         return new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, Collections.singletonList(stack.peek()));
     }
 
-    @Override
-    public void reset() {
-        currentState = new InitialState();
-    }
-
-    private class InitialState implements ParserAutomataState {
+    private static class InitialState implements ParserAutomataState {
         private List<Transition> transitions = Collections.singletonList(
                 new Transition() {
                     private ParserAutomata inner = new PrimaryExpressionAutomata();
@@ -83,7 +61,7 @@ public class MultiplicativeExpressionAutomata implements ParserAutomata {
         }
     }
 
-    private class AcceptanceState implements ParserAutomataState {
+    private static class AcceptanceState implements ParserAutomataState {
         @Override
         public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
             throw new NoTransitionException();
@@ -100,7 +78,7 @@ public class MultiplicativeExpressionAutomata implements ParserAutomata {
         }
     }
 
-    private class DivideOrMultiplyState implements ParserAutomataState {
+    private static class DivideOrMultiplyState implements ParserAutomataState {
         private List<Transition> transitions = Arrays.asList(
                 new Transition() {
                     @Override

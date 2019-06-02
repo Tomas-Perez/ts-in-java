@@ -2,7 +2,6 @@ package com.wawey.parser.automata;
 
 import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
-import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
@@ -12,27 +11,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class LiteralAutomata implements ParserAutomata {
-    private final Stack<ASTNode> stack = new Stack<>();
-    private ParserAutomataState currentState;
+public class LiteralAutomata extends ParserAutomataImpl {
 
     public LiteralAutomata() {
-        this.currentState = new InitialState();
-    }
-
-    @Override
-    public void consume(Token token) {
-        currentState = currentState.transition(token, stack);
-    }
-
-    @Override
-    public boolean acceptable() {
-        return currentState.isAcceptable();
-    }
-
-    @Override
-    public boolean accepts(Token token) {
-        return currentState.accepts(token);
+        super(new InitialState());
     }
 
     @Override
@@ -40,12 +22,7 @@ public class LiteralAutomata implements ParserAutomata {
         return new NonTerminalNode(Rule.LITERAL, Collections.singletonList(stack.peek()));
     }
 
-    @Override
-    public void reset() {
-        currentState = new InitialState();
-    }
-
-    private class InitialState implements ParserAutomataState {
+    private static class InitialState implements ParserAutomataState {
         private List<Transition> transitions = Arrays.asList(
                 new Transition() {
                     private ParserAutomata inner = new NumberLiteralAutomata();
@@ -97,7 +74,7 @@ public class LiteralAutomata implements ParserAutomata {
         }
     }
 
-    private class AcceptanceState implements ParserAutomataState {
+    private static class AcceptanceState implements ParserAutomataState {
         @Override
         public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
             throw new NoTransitionException();

@@ -12,22 +12,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class PrimaryExpressionAutomata implements ParserAutomata {
-    private final Stack<ASTNode> stack = new Stack<>();
-    private ParserAutomataState currentState;
+public class PrimaryExpressionAutomata extends ParserAutomataImpl {
 
     public PrimaryExpressionAutomata() {
-        this.currentState = new InitialState();
-    }
-
-    @Override
-    public void consume(Token token) {
-        currentState = currentState.transition(token, stack);
-    }
-
-    @Override
-    public boolean acceptable() {
-        return currentState.isAcceptable();
+        super(new InitialState());
     }
 
     @Override
@@ -35,17 +23,7 @@ public class PrimaryExpressionAutomata implements ParserAutomata {
         return new NonTerminalNode(Rule.PRIMARY_EXPRESSION, Collections.singletonList(stack.peek()));
     }
 
-    @Override
-    public void reset() {
-        currentState = new InitialState();
-    }
-
-    @Override
-    public boolean accepts(Token token) {
-        return currentState.accepts(token);
-    }
-
-    private class InitialState implements ParserAutomataState {
+    private static class InitialState implements ParserAutomataState {
         private List<Transition> transitions = Arrays.asList(
                 new Transition() {
                     ParserAutomata inner = new LiteralAutomata();
@@ -108,7 +86,7 @@ public class PrimaryExpressionAutomata implements ParserAutomata {
         }
     }
 
-    private class AcceptanceState implements ParserAutomataState {
+    private static class AcceptanceState implements ParserAutomataState {
         @Override
         public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
             throw new NoTransitionException();
@@ -125,7 +103,7 @@ public class PrimaryExpressionAutomata implements ParserAutomata {
         }
     }
 
-    private class RightParenState implements ParserAutomataState {
+    private static class RightParenState implements ParserAutomataState {
         @Override
         public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
