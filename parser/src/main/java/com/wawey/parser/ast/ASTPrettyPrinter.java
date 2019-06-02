@@ -3,8 +3,8 @@ package com.wawey.parser.ast;
 import java.util.stream.Collectors;
 
 public class ASTPrettyPrinter {
-    public static String prettyPrint(ASTNode ast) {
-        return prettyPrint(ast, 1);
+    public static void prettyPrint(ASTNode ast) {
+        System.out.println(prettyPrint(ast, 1));
     }
 
     private static String prettyPrint(ASTNode ast, int depth) {
