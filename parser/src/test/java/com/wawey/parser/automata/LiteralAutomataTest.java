@@ -3,14 +3,11 @@ package com.wawey.parser.automata;
 import com.wawey.lexer.TokenImpl;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
-import com.wawey.parser.ast.LiteralNode;
 import com.wawey.parser.ast.NonTerminalNode;
 import com.wawey.parser.ast.NumberLiteralNode;
 import com.wawey.parser.ast.StringLiteralNode;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.Collections;
 
 public class LiteralAutomataTest {
 
