@@ -5,10 +5,7 @@ import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
-import com.wawey.parser.ast.NonTerminalNode;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -16,13 +13,7 @@ import java.util.Stack;
  */
 public class VariableDeclarationAutomata extends ParserAutomataImpl {
     public VariableDeclarationAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        List<ASTNode> result = new LinkedList<>(stack);
-        return new NonTerminalNode(Rule.VARIABLE_DECLARATION, result);
+        super(Rule.VARIABLE_DECLARATION, new InitialState());
     }
 
     private static class InitialState implements ParserAutomataState {

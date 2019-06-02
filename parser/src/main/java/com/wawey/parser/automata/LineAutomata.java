@@ -14,12 +14,7 @@ import java.util.Stack;
  */
 public class LineAutomata extends ParserAutomataImpl {
     public LineAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.LINE, stack.peek());
+        super(Rule.LINE, new InitialState());
     }
 
     private static class InitialState extends TransitionState {

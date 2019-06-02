@@ -63,7 +63,9 @@ public class InnerAutomataState implements ParserAutomataState {
         @Override
         public StateChange transition(Token token, Stack<ASTNode> stack) {
             try {
-                return first.transition(token, stack);
+                Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
+                copy.pop();
+                return first.transition(token, copy);
             } catch (NoTransitionException exc) {
                 return second.transition(token, stack);
             }

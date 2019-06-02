@@ -11,12 +11,7 @@ import java.util.Stack;
 public class AdditiveExpressionAutomata extends ParserAutomataImpl {
 
     public AdditiveExpressionAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, stack.peek());
+        super(Rule.ADDITIVE_EXPRESSION, new InitialState());
     }
 
     private static class InitialState extends TransitionState {

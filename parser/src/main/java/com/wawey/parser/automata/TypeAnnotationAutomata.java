@@ -14,12 +14,7 @@ import java.util.Stack;
  */
 public class TypeAnnotationAutomata extends ParserAutomataImpl {
     public TypeAnnotationAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.TYPE_ANNOTATION, stack.peek());
+        super(Rule.TYPE_ANNOTATION, new InitialState());
     }
 
     private static class InitialState implements ParserAutomataState {

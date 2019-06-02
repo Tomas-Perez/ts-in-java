@@ -12,7 +12,12 @@ import java.util.Stack;
  */
 public class FileAutomata extends ParserAutomataImpl {
     public FileAutomata() {
-        super(new InitialState());
+        super(Rule.FILE, new InitialState());
+    }
+
+    @Override
+    public ASTNode getResult() {
+        return stack.peek();
     }
 
     private static class InitialState extends TransitionState {

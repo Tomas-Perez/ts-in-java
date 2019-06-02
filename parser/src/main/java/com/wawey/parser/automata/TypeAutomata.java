@@ -7,12 +7,7 @@ import com.wawey.parser.ast.NonTerminalNode;
 public class TypeAutomata extends ParserAutomataImpl {
 
     public TypeAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.TYPE, stack.peek());
+        super(Rule.TYPE, new InitialState());
     }
 
     private static class InitialState extends TransitionState {

@@ -12,13 +12,7 @@ import java.util.List;
  */
 public class CoverInitializedNameAutomata extends ParserAutomataImpl {
     public CoverInitializedNameAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        List<ASTNode> result = new LinkedList<>(stack);
-        return new NonTerminalNode(Rule.COVER_INITIALIZED_NAME, result);
+        super(Rule.COVER_INITIALIZED_NAME, new InitialState());
     }
 
     private static class InitialState extends TransitionState {

@@ -12,12 +12,7 @@ import java.util.Stack;
 public class PrimaryExpressionAutomata extends ParserAutomataImpl {
 
     public PrimaryExpressionAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.PRIMARY_EXPRESSION, stack.peek());
+        super(Rule.PRIMARY_EXPRESSION, new InitialState());
     }
 
     private static class InitialState extends TransitionState {

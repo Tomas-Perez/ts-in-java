@@ -11,12 +11,7 @@ import java.util.Stack;
 public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
 
     public MultiplicativeExpressionAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, stack.peek());
+        super(Rule.MULTIPLICATIVE_EXPRESSION, new InitialState());
     }
 
     private static class InitialState extends TransitionState {

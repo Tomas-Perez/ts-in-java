@@ -14,12 +14,7 @@ import java.util.Stack;
  */
 public class InitializerAutomata extends ParserAutomataImpl {
     public InitializerAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.INITIALIZER, stack.peek());
+        super(Rule.INITIALIZER, new InitialState());
     }
 
     private static class InitialState implements ParserAutomataState {

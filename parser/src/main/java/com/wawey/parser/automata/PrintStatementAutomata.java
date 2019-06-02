@@ -7,6 +7,7 @@ import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
 
+import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -14,12 +15,7 @@ import java.util.Stack;
  */
 public class PrintStatementAutomata extends ParserAutomataImpl {
     public PrintStatementAutomata() {
-        super(new InitialState());
-    }
-
-    @Override
-    public ASTNode getResult() {
-        return new NonTerminalNode(Rule.PRINT_STATEMENT, stack.peek());
+        super(Rule.PRINT_STATEMENT, new InitialState());
     }
 
     private static class InitialState implements ParserAutomataState {
