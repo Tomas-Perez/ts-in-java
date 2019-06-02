@@ -24,7 +24,7 @@ public class TransitionToAutomata implements Transition {
     }
 
     @Override
-    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+    public StateChange nextState(Token token, Stack<ASTNode> stack) {
         ParserAutomataState next = new InnerAutomataState(automata, onFinishTransition);
         return next.transition(token, stack);
     }

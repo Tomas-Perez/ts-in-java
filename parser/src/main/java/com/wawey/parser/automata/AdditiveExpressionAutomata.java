@@ -36,14 +36,18 @@ public class AdditiveExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ASTNode left = stack.pop();
-                            stack.push(new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, left));
-                            return new InnerAutomataState(new MultiplicativeExpressionAutomata(), AddOrSubtractState::new, (s) -> {
-                                ASTNode r = s.pop();
-                                ASTNode l = s.pop();
-                                stack.push(new NonTerminalNode(Rule.SUM_EXPRESSION, l, r));
-                            });
+                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                            Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
+                            ASTNode left = copy.pop();
+                            copy.push(new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, left));
+                            return new StateChangeImpl(
+                                    new InnerAutomataState(new MultiplicativeExpressionAutomata(), AddOrSubtractState::new, (s) -> {
+                                        ASTNode r = s.pop();
+                                        ASTNode l = s.pop();
+                                        s.push(new NonTerminalNode(Rule.SUM_EXPRESSION, l, r));
+                                    }),
+                                    copy
+                            );
                         }
                     },
                     new Transition() {
@@ -53,14 +57,18 @@ public class AdditiveExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ASTNode left = stack.pop();
-                            stack.push(new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, left));
-                            return new InnerAutomataState(new MultiplicativeExpressionAutomata(), AddOrSubtractState::new, (s) -> {
-                                ASTNode r = s.pop();
-                                ASTNode l = s.pop();
-                                stack.push(new NonTerminalNode(Rule.SUBTRACT_EXPRESSION, l, r));
-                            });
+                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                            Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
+                            ASTNode left = copy.pop();
+                            copy.push(new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, left));
+                            return new StateChangeImpl(
+                                    new InnerAutomataState(new MultiplicativeExpressionAutomata(), AddOrSubtractState::new, (s) -> {
+                                        ASTNode r = s.pop();
+                                        ASTNode l = s.pop();
+                                        s.push(new NonTerminalNode(Rule.SUBTRACT_EXPRESSION, l, r));
+                                    }),
+                                    copy
+                            );
                         }
                     }
             );

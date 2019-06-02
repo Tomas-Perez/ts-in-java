@@ -24,9 +24,12 @@ public class PrintStatementAutomata extends ParserAutomataImpl {
 
     private static class InitialState implements ParserAutomataState {
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                return new PostPrintState();
+                return new StateChangeImpl(
+                        new PostPrintState(),
+                        stack
+                );
             } else throw new NoTransitionException();
         }
 
@@ -43,9 +46,12 @@ public class PrintStatementAutomata extends ParserAutomataImpl {
 
     private static class PostPrintState implements ParserAutomataState {
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                return new InnerAutomataState(new AdditiveExpressionAutomata(), RightParenState::new);
+                return new StateChangeImpl(
+                        new InnerAutomataState(new AdditiveExpressionAutomata(), RightParenState::new),
+                        stack
+                );
             } else throw new NoTransitionException();
         }
 
@@ -62,9 +68,12 @@ public class PrintStatementAutomata extends ParserAutomataImpl {
 
     private static class RightParenState implements ParserAutomataState {
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChangeImpl transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                return new AcceptedState();
+                return new StateChangeImpl(
+                        new AcceptedState(),
+                        stack
+                );
             } else throw new NoTransitionException();
         }
 

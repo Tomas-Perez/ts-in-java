@@ -27,9 +27,12 @@ public class VariableDeclarationAutomata extends ParserAutomataImpl {
 
     private static class InitialState implements ParserAutomataState {
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                return new InnerAutomataState(new IdentifierAutomata(), PostIdentifierState::new);
+                return new StateChangeImpl(
+                        new InnerAutomataState(new IdentifierAutomata(), PostIdentifierState::new),
+                        stack
+                );
             } else throw new NoTransitionException();
         }
 

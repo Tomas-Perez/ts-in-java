@@ -39,14 +39,18 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ASTNode left = stack.pop();
-                            stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
-                            return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
-                                ASTNode r = s.pop();
-                                ASTNode l = s.pop();
-                                stack.push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, l, r));
-                            });
+                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                            Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
+                            ASTNode left = copy.pop();
+                            copy.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
+                            return new StateChangeImpl(
+                                    new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
+                                        ASTNode r = s.pop();
+                                        ASTNode l = s.pop();
+                                        s.push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, l, r));
+                                    }),
+                                    copy
+                            );
                         }
                     },
                     new Transition() {
@@ -56,14 +60,18 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ASTNode left = stack.pop();
-                            stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
-                            return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
-                                ASTNode r = s.pop();
-                                ASTNode l = s.pop();
-                                stack.push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, l, r));
-                            });
+                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                            Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
+                            ASTNode left = copy.pop();
+                            copy.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
+                            return new StateChangeImpl(
+                                    new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
+                                        ASTNode r = s.pop();
+                                        ASTNode l = s.pop();
+                                        s.push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, l, r));
+                                    }),
+                                    copy
+                            );
                         }
                     }
             );

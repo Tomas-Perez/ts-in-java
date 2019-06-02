@@ -16,7 +16,8 @@ public class InnerAutomataState implements ParserAutomataState {
     public InnerAutomataState(ParserAutomata automata, Supplier<ParserAutomataState> next) {
         this.automata = automata;
         this.next = next;
-        this.onFinish = (s) -> {};
+        this.onFinish = (s) -> {
+        };
     }
 
     public InnerAutomataState(ParserAutomata automata, Supplier<ParserAutomataState> next, Consumer<Stack<ASTNode>> onFinish) {
@@ -31,14 +32,18 @@ public class InnerAutomataState implements ParserAutomataState {
     }
 
     @Override
-    public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+    public StateChange transition(Token token, Stack<ASTNode> stack) {
+        Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
         automata.consume(token);
         if (automata.acceptable()) {
-            stack.push(automata.getResult());
-            onFinish.accept(stack);
-            return new DualState(this, next.get());
+            copy.push(automata.getResult());
+            onFinish.accept(copy);
+            return new StateChangeImpl(
+                    new DualState(this, next.get()),
+                    copy
+            );
         }
-        return this;
+        return new StateChangeImpl(this, copy);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class InnerAutomataState implements ParserAutomataState {
         }
 
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, Stack<ASTNode> stack) {
             try {
                 return first.transition(token, stack);
             } catch (NoTransitionException exc) {

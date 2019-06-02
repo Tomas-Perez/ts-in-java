@@ -24,9 +24,12 @@ public class TypeAnnotationAutomata extends ParserAutomataImpl {
 
     private static class InitialState implements ParserAutomataState {
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                return new InnerAutomataState(new TypeAutomata(), AcceptedState::new);
+                return new StateChangeImpl(
+                        new InnerAutomataState(new TypeAutomata(), AcceptedState::new),
+                        stack
+                );
             } else throw new NoTransitionException();
         }
 

@@ -7,5 +7,6 @@ import java.util.Stack;
 
 public interface Transition {
     boolean consumes(Token token);
-    ParserAutomataState nextState(Token token, Stack<ASTNode> stack);
+
+    StateChange nextState(Token token, Stack<ASTNode> stack);
 }

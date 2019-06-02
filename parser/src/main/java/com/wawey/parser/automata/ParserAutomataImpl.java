@@ -17,7 +17,9 @@ public class ParserAutomataImpl implements ParserAutomata {
 
     @Override
     public void consume(Token token) {
-        currentState = currentState.transition(token, stack);
+        StateChange change = currentState.transition(token, stack);
+        currentState = change.getNextState();
+        stack = change.getNewStack();
     }
 
     @Override

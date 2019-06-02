@@ -30,9 +30,12 @@ public class LineAutomata extends ParserAutomataImpl {
 
     private static class GotStatementState implements ParserAutomataState {
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                return new AcceptedState();
+                return new StateChangeImpl(
+                        new AcceptedState(),
+                        stack
+                );
             } else throw new NoTransitionException();
         }
 

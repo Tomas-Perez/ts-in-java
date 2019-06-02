@@ -37,10 +37,14 @@ public class TerminalNodeParser extends ParserAutomataImpl {
         }
 
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChangeImpl transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                stack.push(nodeMapper.apply(token));
-                return new AcceptedState();
+                Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
+                copy.push(nodeMapper.apply(token));
+                return new StateChangeImpl(
+                        new AcceptedState(),
+                        copy
+                );
             } else {
                 throw new NoTransitionException();
             }

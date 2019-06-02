@@ -27,7 +27,7 @@ public class FileAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
                             ParserAutomataState next = new InnerAutomataState(inner, GotLineState::new, (s) -> {
                                 ASTNode line = s.pop();
                                 s.push(new NonTerminalNode(Rule.FILE, line));
@@ -52,7 +52,7 @@ public class FileAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
                             ParserAutomataState next = new InnerAutomataState(inner, GotLineState::new, (s) -> {
                                 ASTNode line = s.pop();
                                 ASTNode file = s.pop();

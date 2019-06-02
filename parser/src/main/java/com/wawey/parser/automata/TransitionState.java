@@ -44,7 +44,7 @@ public class TransitionState implements ParserAutomataState {
     }
 
     @Override
-    public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+    public StateChange transition(Token token, Stack<ASTNode> stack) {
         return transitions.stream()
                 .filter(t -> t.consumes(token))
                 .findFirst()

@@ -21,7 +21,7 @@ public class AcceptedState implements ParserAutomataState {
     }
 
     @Override
-    public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+    public StateChange transition(Token token, Stack<ASTNode> stack) {
         throw new NoTransitionException();
     }
 }

@@ -1,13 +1,11 @@
 package com.wawey.parser.automata;
 
-import com.wawey.lexer.Token;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * @author Tomas Perez Molina

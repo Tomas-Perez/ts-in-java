@@ -33,8 +33,11 @@ public class PrimaryExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            return new InnerAutomataState(new AdditiveExpressionAutomata(), RightParenState::new);
+                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                            return new StateChangeImpl(
+                                    new InnerAutomataState(new AdditiveExpressionAutomata(), RightParenState::new),
+                                    stack
+                            );
                         }
                     }
             );
@@ -43,9 +46,12 @@ public class PrimaryExpressionAutomata extends ParserAutomataImpl {
 
     private static class RightParenState implements ParserAutomataState {
         @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, Stack<ASTNode> stack) {
             if (accepts(token)) {
-                return new AcceptedState();
+                return new StateChangeImpl(
+                        new AcceptedState(),
+                        stack
+                );
             } else {
                 throw new NoTransitionException();
             }
