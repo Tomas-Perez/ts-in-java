@@ -40,21 +40,4 @@ public class InitializerAutomata extends ParserAutomataImpl {
             return token.getType() == TokenType.EQUALS;
         }
     }
-
-    private static class AcceptedState implements ParserAutomataState {
-        @Override
-        public boolean isAcceptable() {
-            return true;
-        }
-
-        @Override
-        public boolean accepts(Token token) {
-            return false;
-        }
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            throw new NoTransitionException();
-        }
-    }
 }

@@ -39,21 +39,4 @@ public class StringTypeAutomata extends ParserAutomataImpl {
 
         }
     }
-
-    private static class AcceptedState implements ParserAutomataState {
-        @Override
-        public boolean isAcceptable() {
-            return true;
-        }
-
-        @Override
-        public boolean accepts(Token token) {
-            return false;
-        }
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            throw new NoTransitionException();
-        }
-    }
 }
