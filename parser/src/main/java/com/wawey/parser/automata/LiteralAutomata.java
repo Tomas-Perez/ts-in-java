@@ -19,7 +19,7 @@ public class LiteralAutomata extends ParserAutomataImpl {
 
     @Override
     public ASTNode getResult() {
-        return new NonTerminalNode(Rule.LITERAL, Collections.singletonList(stack.peek()));
+        return new NonTerminalNode(Rule.LITERAL, stack.peek());
     }
 
     private static class InitialState implements ParserAutomataState {

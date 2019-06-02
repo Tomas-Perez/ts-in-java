@@ -3,11 +3,11 @@ package com.wawey.parser.ast;
 import java.util.stream.Collectors;
 
 public class ASTPrettyPrinter {
-    public String prettyPrint(ASTNode ast) {
+    public static String prettyPrint(ASTNode ast) {
         return prettyPrint(ast, 1);
     }
 
-    public String prettyPrint(ASTNode ast, int depth) {
+    private static String prettyPrint(ASTNode ast, int depth) {
         StringBuilder builder = new StringBuilder();
         builder.append(ast.getRule());
         builder.append("(");

@@ -20,7 +20,7 @@ public class LiteralAutomataTest {
         parserAutomata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "12", 1, 1));
         Assert.assertTrue(parserAutomata.acceptable());
         Assert.assertEquals(
-                new NonTerminalNode(Rule.LITERAL, Collections.singletonList(new NumberLiteralNode(1, 1, "12"))),
+                new NonTerminalNode(Rule.LITERAL, new NumberLiteralNode(1, 1, "12")),
                 parserAutomata.getResult()
         );
     }
@@ -31,7 +31,7 @@ public class LiteralAutomataTest {
         parserAutomata.consume(new TokenImpl(TokenType.STRING_LITERAL, "\"12\"", 1, 1));
         Assert.assertTrue(parserAutomata.acceptable());
         Assert.assertEquals(
-                new NonTerminalNode(Rule.LITERAL, Collections.singletonList(new StringLiteralNode(1, 1, "\"12\""))),
+                new NonTerminalNode(Rule.LITERAL, new StringLiteralNode(1, 1, "\"12\"")),
                 parserAutomata.getResult()
         );
     }

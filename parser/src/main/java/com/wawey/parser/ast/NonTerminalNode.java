@@ -4,10 +4,7 @@ import com.wawey.parser.LineColumnRangePair;
 import com.wawey.parser.Range;
 import com.wawey.parser.Rule;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class NonTerminalNode implements ASTNode {
@@ -19,6 +16,14 @@ public class NonTerminalNode implements ASTNode {
             throw new IllegalStateException("Non terminal node must have at least one child");
         this.rule = rule;
         this.children = children;
+    }
+
+    public NonTerminalNode(Rule rule, ASTNode child) {
+        this(rule, Collections.singletonList(child));
+    }
+
+    public NonTerminalNode(Rule rule, ASTNode... children) {
+        this(rule, Arrays.asList(children));
     }
 
     public Rule getRule() {

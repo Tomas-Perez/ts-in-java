@@ -20,7 +20,7 @@ public class PrimaryExpressionAutomata extends ParserAutomataImpl {
 
     @Override
     public ASTNode getResult() {
-        return new NonTerminalNode(Rule.PRIMARY_EXPRESSION, Collections.singletonList(stack.peek()));
+        return new NonTerminalNode(Rule.PRIMARY_EXPRESSION, stack.peek());
     }
 
     private static class InitialState implements ParserAutomataState {

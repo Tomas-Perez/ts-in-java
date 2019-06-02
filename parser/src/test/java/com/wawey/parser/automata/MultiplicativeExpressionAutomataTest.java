@@ -9,8 +9,6 @@ import com.wawey.parser.ast.NumberLiteralNode;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.function.Function;
 
 public class MultiplicativeExpressionAutomataTest {
@@ -22,15 +20,11 @@ public class MultiplicativeExpressionAutomataTest {
         Assert.assertEquals(
                 new NonTerminalNode(
                         Rule.MULTIPLICATIVE_EXPRESSION,
-                        Collections.singletonList(
+                        new NonTerminalNode(
+                                Rule.PRIMARY_EXPRESSION,
                                 new NonTerminalNode(
-                                        Rule.PRIMARY_EXPRESSION,
-                                        Collections.singletonList(
-                                                new NonTerminalNode(
-                                                        Rule.LITERAL,
-                                                        Collections.singletonList(new NumberLiteralNode(1, 1, "1"))
-                                                )
-                                        )
+                                        Rule.LITERAL,
+                                        new NumberLiteralNode(1, 1, "1")
                                 )
                         )
                 ),
@@ -43,43 +37,77 @@ public class MultiplicativeExpressionAutomataTest {
         ParserAutomata automata = new MultiplicativeExpressionAutomata();
         automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1));
         automata.consume(TokenImpl.forFixedToken(TokenType.ASTERISK, 1, 2));
-        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 3));
         Assert.assertTrue(automata.acceptable());
-        ASTNode right = new NonTerminalNode(
-                Rule.PRIMARY_EXPRESSION,
-                Collections.singletonList(
-                        new NonTerminalNode(
-                                Rule.LITERAL,
-                                Collections.singletonList(new NumberLiteralNode(1, 1, "1"))
-                        )
-                )
-        );
         ASTNode left = new NonTerminalNode(
                 Rule.MULTIPLICATIVE_EXPRESSION,
-                Collections.singletonList(
+                new NonTerminalNode(
+                        Rule.PRIMARY_EXPRESSION,
                         new NonTerminalNode(
-                                Rule.PRIMARY_EXPRESSION,
-                                Collections.singletonList(
-                                        new NonTerminalNode(
-                                                Rule.LITERAL,
-                                                Collections.singletonList(new NumberLiteralNode(1, 1, "1"))
-                                        )
-                                )
+                                Rule.LITERAL,
+                                new NumberLiteralNode(1, 1, "1")
                         )
+
+                )
+
+        );
+        ASTNode right = new NonTerminalNode(
+                Rule.PRIMARY_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.LITERAL,
+                        new NumberLiteralNode(1, 3, "1")
                 )
         );
+
 
         Assert.assertEquals(
                 new NonTerminalNode(
                         Rule.MULTIPLICATIVE_EXPRESSION,
-                        Collections.singletonList(
-                                new NonTerminalNode(
-                                        Rule.MULTIPLY_EXPRESSION,
-                                        Arrays.asList(
-                                                left,
-                                                right
-                                        )
-                                )
+                        new NonTerminalNode(
+                                Rule.MULTIPLY_EXPRESSION,
+                                left,
+                                right
+                        )
+                ),
+                automata.getResult()
+        );
+    }
+
+    @Test
+    public void shouldBuildATreeOf_MultiplicativeExp_DivideExp_WhenGivenTokensForDivision() {
+        ParserAutomata automata = new MultiplicativeExpressionAutomata();
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1));
+        automata.consume(TokenImpl.forFixedToken(TokenType.FORWARD_SLASH, 1, 2));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 3));
+        Assert.assertTrue(automata.acceptable());
+        ASTNode left = new NonTerminalNode(
+                Rule.MULTIPLICATIVE_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.PRIMARY_EXPRESSION,
+                        new NonTerminalNode(
+                                Rule.LITERAL,
+                                new NumberLiteralNode(1, 1, "1")
+                        )
+
+                )
+
+        );
+        ASTNode right = new NonTerminalNode(
+                Rule.PRIMARY_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.LITERAL,
+                        new NumberLiteralNode(1, 3, "1")
+                )
+        );
+
+
+        Assert.assertEquals(
+                new NonTerminalNode(
+                        Rule.MULTIPLICATIVE_EXPRESSION,
+                        new NonTerminalNode(
+                                Rule.DIVIDE_EXPRESSION,
+                                left,
+                                right
                         )
                 ),
                 automata.getResult()
@@ -97,40 +125,74 @@ public class MultiplicativeExpressionAutomataTest {
         Assert.assertTrue(automata.acceptable());
         Function<NumberLiteralNode, ASTNode> literalFactory = (n) -> new NonTerminalNode(
                 Rule.PRIMARY_EXPRESSION,
-                Collections.singletonList(
-                        new NonTerminalNode(
-                                Rule.LITERAL,
-                                Collections.singletonList(n)
-                        )
+                new NonTerminalNode(
+                        Rule.LITERAL,
+                        n
                 )
         );
 
         ASTNode literal1 = literalFactory.apply(new NumberLiteralNode(1, 1, "1"));
         ASTNode literal2 = literalFactory.apply(new NumberLiteralNode(1, 3, "1"));
         ASTNode literal3 = literalFactory.apply(new NumberLiteralNode(1, 5, "1"));
-        ASTNode mult1 = new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, Collections.singletonList(literal1));
+        ASTNode mult1 = new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, literal1);
         ASTNode mult2 = new NonTerminalNode(
                 Rule.MULTIPLICATIVE_EXPRESSION,
-                Collections.singletonList(
-                        new NonTerminalNode(
-                                Rule.MULTIPLY_EXPRESSION,
-                                Arrays.asList(
-                                        mult1,
-                                        literal2
-                                )
-                        )
+                new NonTerminalNode(
+                        Rule.MULTIPLY_EXPRESSION,
+                        mult1,
+                        literal2
                 )
         );
         ASTNode mult3 = new NonTerminalNode(
                 Rule.MULTIPLICATIVE_EXPRESSION,
-                Collections.singletonList(
-                        new NonTerminalNode(
-                                Rule.MULTIPLY_EXPRESSION,
-                                Arrays.asList(
-                                        mult2,
-                                        literal3
-                                )
-                        )
+                new NonTerminalNode(
+                        Rule.MULTIPLY_EXPRESSION,
+                        mult2,
+                        literal3
+                )
+        );
+
+        Assert.assertEquals(
+                mult3,
+                automata.getResult()
+        );
+    }
+
+    @Test
+    public void shouldBuildATreeOf_MultiplicativeExp_DivideExp_WhenGivenTokensForTriwayDivision() {
+        ParserAutomata automata = new MultiplicativeExpressionAutomata();
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1));
+        automata.consume(TokenImpl.forFixedToken(TokenType.FORWARD_SLASH, 1, 2));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 3));
+        automata.consume(TokenImpl.forFixedToken(TokenType.FORWARD_SLASH, 1, 4));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 5));
+        Assert.assertTrue(automata.acceptable());
+        Function<NumberLiteralNode, ASTNode> literalFactory = (n) -> new NonTerminalNode(
+                Rule.PRIMARY_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.LITERAL,
+                        n
+                )
+        );
+
+        ASTNode literal1 = literalFactory.apply(new NumberLiteralNode(1, 1, "1"));
+        ASTNode literal2 = literalFactory.apply(new NumberLiteralNode(1, 3, "1"));
+        ASTNode literal3 = literalFactory.apply(new NumberLiteralNode(1, 5, "1"));
+        ASTNode mult1 = new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, literal1);
+        ASTNode mult2 = new NonTerminalNode(
+                Rule.MULTIPLICATIVE_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.DIVIDE_EXPRESSION,
+                        mult1,
+                        literal2
+                )
+        );
+        ASTNode mult3 = new NonTerminalNode(
+                Rule.MULTIPLICATIVE_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.DIVIDE_EXPRESSION,
+                        mult2,
+                        literal3
                 )
         );
 

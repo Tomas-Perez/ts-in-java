@@ -9,8 +9,6 @@ import com.wawey.parser.ast.NumberLiteralNode;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collections;
-
 public class PrimaryExpressionAutomataTest {
     @Test
     public void shouldBuildATreeOf_PrimaryExp_Literal_NumberLiteral_WhenGivenNumberLiteralToken() {
@@ -20,11 +18,9 @@ public class PrimaryExpressionAutomataTest {
         Assert.assertEquals(
                 new NonTerminalNode(
                         Rule.PRIMARY_EXPRESSION,
-                        Collections.singletonList(
-                                new NonTerminalNode(
-                                        Rule.LITERAL,
-                                        Collections.singletonList(new NumberLiteralNode(1, 1, "12"))
-                                )
+                        new NonTerminalNode(
+                                Rule.LITERAL,
+                                new NumberLiteralNode(1, 1, "12")
                         )
                 ),
                 parserAutomata.getResult()
@@ -39,9 +35,7 @@ public class PrimaryExpressionAutomataTest {
         Assert.assertEquals(
                 new NonTerminalNode(
                         Rule.PRIMARY_EXPRESSION,
-                        Collections.singletonList(
-                                new IdentifierNode(1, 1, "abc12")
-                        )
+                        new IdentifierNode(1, 1, "abc12")
                 ),
                 parserAutomata.getResult()
         );
@@ -57,9 +51,7 @@ public class PrimaryExpressionAutomataTest {
         Assert.assertEquals(
                 new NonTerminalNode(
                         Rule.PRIMARY_EXPRESSION,
-                        Collections.singletonList(
-                                new IdentifierNode(1, 2, "abc12")
-                        )
+                        new IdentifierNode(1, 2, "abc12")
                 ),
                 parserAutomata.getResult()
         );

@@ -12,21 +12,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
+public class AdditiveExpressionAutomata extends ParserAutomataImpl {
 
-    public MultiplicativeExpressionAutomata() {
+    public AdditiveExpressionAutomata() {
         super(new InitialState());
     }
 
     @Override
     public ASTNode getResult() {
-        return new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, stack.peek());
+        return new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, stack.peek());
     }
 
     private static class InitialState implements ParserAutomataState {
         private List<Transition> transitions = Collections.singletonList(
                 new Transition() {
-                    private ParserAutomata inner = new PrimaryExpressionAutomata();
+                    private ParserAutomata inner = new MultiplicativeExpressionAutomata();
 
                     @Override
                     public boolean consumes(Token token) {
@@ -35,7 +35,7 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
 
                     @Override
                     public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, DivideOrMultiplyState::new);
+                        ParserAutomataState next = new InnerAutomataState(inner, AddOrSubtractState::new);
                         return next.transition(token, stack);
                     }
                 }
@@ -61,39 +61,39 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
         }
     }
 
-    private static class DivideOrMultiplyState implements ParserAutomataState {
+    private static class AddOrSubtractState implements ParserAutomataState {
         private List<Transition> transitions = Arrays.asList(
                 new Transition() {
                     @Override
                     public boolean consumes(Token token) {
-                        return token.getType() == TokenType.ASTERISK;
+                        return token.getType() == TokenType.PLUS;
                     }
 
                     @Override
                     public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
                         ASTNode left = stack.pop();
-                        stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
-                        return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
+                        stack.push(new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, left));
+                        return new InnerAutomataState(new MultiplicativeExpressionAutomata(), AddOrSubtractState::new, (s) -> {
                             ASTNode r = s.pop();
                             ASTNode l = s.pop();
-                            stack.push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, l, r));
+                            stack.push(new NonTerminalNode(Rule.SUM_EXPRESSION, l, r));
                         });
                     }
                 },
                 new Transition() {
                     @Override
                     public boolean consumes(Token token) {
-                        return token.getType() == TokenType.FORWARD_SLASH;
+                        return token.getType() == TokenType.MINUS;
                     }
 
                     @Override
                     public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
                         ASTNode left = stack.pop();
-                        stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
-                        return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
+                        stack.push(new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, left));
+                        return new InnerAutomataState(new MultiplicativeExpressionAutomata(), AddOrSubtractState::new, (s) -> {
                             ASTNode r = s.pop();
                             ASTNode l = s.pop();
-                            stack.push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, l, r));
+                            stack.push(new NonTerminalNode(Rule.SUBTRACT_EXPRESSION, l, r));
                         });
                     }
                 }
