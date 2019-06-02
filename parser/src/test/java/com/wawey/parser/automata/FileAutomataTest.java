@@ -4,6 +4,7 @@ import com.wawey.lexer.TokenImpl;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
+import com.wawey.parser.ast.ASTPrettyPrinter;
 import com.wawey.parser.ast.IdentifierNode;
 import com.wawey.parser.ast.NonTerminalNode;
 import org.junit.Assert;
@@ -21,7 +22,7 @@ public class FileAutomataTest {
     }
 
     @Test
-    public void isAcceptableWhenGivenAnEntireLine() {
+    public void shouldBuildATreeOf_File_Line_WhenGivenASingleLine() {
         ParserAutomata automata = new FileAutomata();
         automata.consume(TokenImpl.forFixedToken(TokenType.LET, 1, 1));
         automata.consume(new TokenImpl(TokenType.IDENTIFIER, "a", 1, 4));
@@ -46,7 +47,7 @@ public class FileAutomataTest {
     }
 
     @Test
-    public void isAcceptableWhenGivenMultipleLines() {
+    public void shouldBuildATreeOf_File_FileLine_FileLine_Line_WhenGiven3Lines() {
         ParserAutomata automata = new FileAutomata();
         automata.consume(TokenImpl.forFixedToken(TokenType.LET, 1, 1));
         automata.consume(new TokenImpl(TokenType.IDENTIFIER, "a", 1, 4));
