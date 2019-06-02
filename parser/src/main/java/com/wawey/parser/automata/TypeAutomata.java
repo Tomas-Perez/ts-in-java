@@ -1,13 +1,10 @@
 package com.wawey.parser.automata;
 
-import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 
 public class TypeAutomata extends ParserAutomataImpl {
@@ -21,55 +18,38 @@ public class TypeAutomata extends ParserAutomataImpl {
         return new NonTerminalNode(Rule.TYPE, stack.peek());
     }
 
-    private static class InitialState implements ParserAutomataState {
-        private List<Transition> transitions = Arrays.asList(
-                new Transition() {
-                    private ParserAutomata inner = new NumberTypeAutomata();
+    private static class InitialState extends TransitionState {
+        public InitialState() {
+            super(
+                    new Transition() {
+                        private ParserAutomata inner = new NumberTypeAutomata();
 
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
+                        @Override
+                        public boolean consumes(Token token) {
+                            return inner.accepts(token);
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
+                            return next.transition(token, stack);
+                        }
+                    },
+                    new Transition() {
+                        private ParserAutomata inner = new StringTypeAutomata();
+
+                        @Override
+                        public boolean consumes(Token token) {
+                            return inner.accepts(token);
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
+                            return next.transition(token, stack);
+                        }
                     }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                        return next.transition(token, stack);
-                    }
-                },
-                new Transition() {
-                    private ParserAutomata inner = new StringTypeAutomata();
-
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
-                    }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                        return next.transition(token, stack);
-                    }
-                }
-        );
-
-        @Override
-        public boolean accepts(Token token) {
-            return transitions.stream().anyMatch(t -> t.consumes(token));
-        }
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            return transitions.stream()
-                    .filter(t -> t.consumes(token))
-                    .findFirst()
-                    .map(t -> t.nextState(token, stack))
-                    .orElseThrow(NoTransitionException::new);
-        }
-
-        @Override
-        public boolean isAcceptable() {
-            return false;
+            );
         }
     }
 }

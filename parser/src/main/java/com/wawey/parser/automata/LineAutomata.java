@@ -24,41 +24,24 @@ public class LineAutomata extends ParserAutomataImpl {
         return new NonTerminalNode(Rule.LINE, stack.peek());
     }
 
-    private static class InitialState implements ParserAutomataState {
-        private List<Transition> transitions = Collections.singletonList(
-                new Transition() {
-                    ParserAutomata inner = new StatementAutomata();
+    private static class InitialState extends TransitionState {
+        public InitialState() {
+            super(
+                    new Transition() {
+                        ParserAutomata inner = new StatementAutomata();
 
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
+                        @Override
+                        public boolean consumes(Token token) {
+                            return inner.accepts(token);
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ParserAutomataState next = new InnerAutomataState(inner, GotStatementState::new);
+                            return next.transition(token, stack);
+                        }
                     }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, GotStatementState::new);
-                        return next.transition(token, stack);
-                    }
-                }
-        );
-
-        @Override
-        public boolean accepts(Token token) {
-            return transitions.stream().anyMatch(t -> t.consumes(token));
-        }
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            return transitions.stream()
-                    .filter(t -> t.consumes(token))
-                    .findFirst()
-                    .map(t -> t.nextState(token, stack))
-                    .orElseThrow(NoTransitionException::new);
-        }
-
-        @Override
-        public boolean isAcceptable() {
-            return false;
+            );
         }
     }
 

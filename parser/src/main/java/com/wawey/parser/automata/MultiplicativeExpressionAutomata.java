@@ -1,15 +1,11 @@
 package com.wawey.parser.automata;
 
-import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Stack;
 
 public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
@@ -23,99 +19,67 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
         return new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, stack.peek());
     }
 
-    private static class InitialState implements ParserAutomataState {
-        private List<Transition> transitions = Collections.singletonList(
-                new Transition() {
-                    private ParserAutomata inner = new PrimaryExpressionAutomata();
+    private static class InitialState extends TransitionState {
+        public InitialState() {
+            super(
+                    new Transition() {
+                        private ParserAutomata inner = new PrimaryExpressionAutomata();
 
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
+                        @Override
+                        public boolean consumes(Token token) {
+                            return inner.accepts(token);
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ParserAutomataState next = new InnerAutomataState(inner, DivideOrMultiplyState::new);
+                            return next.transition(token, stack);
+                        }
                     }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, DivideOrMultiplyState::new);
-                        return next.transition(token, stack);
-                    }
-                }
-        );
-
-        @Override
-        public boolean accepts(Token token) {
-            return transitions.stream().anyMatch(t -> t.consumes(token));
-        }
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            return transitions.stream()
-                    .filter(t -> t.consumes(token))
-                    .findFirst()
-                    .map(t -> t.nextState(token, stack))
-                    .orElseThrow(NoTransitionException::new);
-        }
-
-        @Override
-        public boolean isAcceptable() {
-            return false;
+            );
         }
     }
 
-    private static class DivideOrMultiplyState implements ParserAutomataState {
-        private List<Transition> transitions = Arrays.asList(
-                new Transition() {
-                    @Override
-                    public boolean consumes(Token token) {
-                        return token.getType() == TokenType.ASTERISK;
+    private static class DivideOrMultiplyState extends TransitionState {
+
+        public DivideOrMultiplyState() {
+            super(
+                    true,
+                    new Transition() {
+                        @Override
+                        public boolean consumes(Token token) {
+                            return token.getType() == TokenType.ASTERISK;
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ASTNode left = stack.pop();
+                            stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
+                            return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
+                                ASTNode r = s.pop();
+                                ASTNode l = s.pop();
+                                stack.push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, l, r));
+                            });
+                        }
+                    },
+                    new Transition() {
+                        @Override
+                        public boolean consumes(Token token) {
+                            return token.getType() == TokenType.FORWARD_SLASH;
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ASTNode left = stack.pop();
+                            stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
+                            return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
+                                ASTNode r = s.pop();
+                                ASTNode l = s.pop();
+                                stack.push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, l, r));
+                            });
+                        }
                     }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ASTNode left = stack.pop();
-                        stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
-                        return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
-                            ASTNode r = s.pop();
-                            ASTNode l = s.pop();
-                            stack.push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, l, r));
-                        });
-                    }
-                },
-                new Transition() {
-                    @Override
-                    public boolean consumes(Token token) {
-                        return token.getType() == TokenType.FORWARD_SLASH;
-                    }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ASTNode left = stack.pop();
-                        stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
-                        return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
-                            ASTNode r = s.pop();
-                            ASTNode l = s.pop();
-                            stack.push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, l, r));
-                        });
-                    }
-                }
-        );
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            return transitions.stream()
-                    .filter(t -> t.consumes(token))
-                    .findFirst()
-                    .map(t -> t.nextState(token, stack))
-                    .orElseThrow(NoTransitionException::new);
-        }
-
-        @Override
-        public boolean isAcceptable() {
-            return true;
-        }
-
-        @Override
-        public boolean accepts(Token token) {
-            return transitions.stream().anyMatch(t -> t.consumes(token));
+            );
         }
     }
 }

@@ -7,7 +7,9 @@ import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * @author Tomas Perez Molina
@@ -42,93 +44,60 @@ public class VariableDeclarationAutomata extends ParserAutomataImpl {
         }
     }
 
-    private static class PostIdentifierState implements ParserAutomataState {
-        private List<Transition> transitions = Arrays.asList(
-                new Transition() {
-                    private ParserAutomata inner = new TypeAnnotationAutomata();
+    private static class PostIdentifierState extends TransitionState {
+        public PostIdentifierState() {
+            super(
+                    true,
+                    new Transition() {
+                        private ParserAutomata inner = new TypeAnnotationAutomata();
 
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
+                        @Override
+                        public boolean consumes(Token token) {
+                            return inner.accepts(token);
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ParserAutomataState next = new InnerAutomataState(inner, PostTypeAnnotationState::new);
+                            return next.transition(token, stack);
+                        }
+                    },
+                    new Transition() {
+                        private ParserAutomata inner = new InitializerAutomata();
+
+                        @Override
+                        public boolean consumes(Token token) {
+                            return inner.accepts(token);
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
+                            return next.transition(token, stack);
+                        }
                     }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, PostTypeAnnotationState::new);
-                        return next.transition(token, stack);
-                    }
-                },
-                new Transition() {
-                    private ParserAutomata inner = new InitializerAutomata();
-
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
-                    }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                        return next.transition(token, stack);
-                    }
-                }
-        );
-
-        @Override
-        public boolean accepts(Token token) {
-            return transitions.stream().anyMatch(t -> t.consumes(token));
-        }
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            return transitions.stream()
-                    .filter(t -> t.consumes(token))
-                    .findFirst()
-                    .map(t -> t.nextState(token, stack))
-                    .orElseThrow(NoTransitionException::new);
-        }
-
-        @Override
-        public boolean isAcceptable() {
-            return true;
+            );
         }
     }
 
-    private static class PostTypeAnnotationState implements ParserAutomataState {
-        private List<Transition> transitions = Collections.singletonList(
-                new Transition() {
-                    private ParserAutomata inner = new InitializerAutomata();
+    private static class PostTypeAnnotationState extends TransitionState {
+        public PostTypeAnnotationState() {
+            super(
+                    new Transition() {
+                        private ParserAutomata inner = new InitializerAutomata();
 
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
+                        @Override
+                        public boolean consumes(Token token) {
+                            return inner.accepts(token);
+                        }
+
+                        @Override
+                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
+                            return next.transition(token, stack);
+                        }
                     }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                        return next.transition(token, stack);
-                    }
-                }
-        );
-
-        @Override
-        public boolean accepts(Token token) {
-            return transitions.stream().anyMatch(t -> t.consumes(token));
-        }
-
-        @Override
-        public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            return transitions.stream()
-                    .filter(t -> t.consumes(token))
-                    .findFirst()
-                    .map(t -> t.nextState(token, stack))
-                    .orElseThrow(NoTransitionException::new);
-        }
-
-        @Override
-        public boolean isAcceptable() {
-            return false;
+            );
         }
     }
 }
