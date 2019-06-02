@@ -170,7 +170,7 @@ public class AdditiveExpressionAutomataTest {
     }
 
     @Test
-    public void shouldBuildATreeOf_MultiplicativeExp_MultiplyExp_WhenGivenTokensForMultiplication() {
+    public void shouldBuildATreeOf_AdditiveExp_MultiplicativeExp_MultiplyExp_WhenGivenTokensForMultiplication() {
         ParserAutomata automata = new AdditiveExpressionAutomata();
         automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1));
         automata.consume(TokenImpl.forFixedToken(TokenType.ASTERISK, 1, 2));
@@ -208,6 +208,55 @@ public class AdditiveExpressionAutomataTest {
                                         right
                                 )
                         )
+                ),
+                automata.getResult()
+        );
+    }
+
+    @Test
+    public void shouldBuildATreeOf_AdditiveExp_MultiplicativeExp_MultiplyExp_WhenGivenTokensForTriwayMultiplication() {
+        ParserAutomata automata = new AdditiveExpressionAutomata();
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1));
+        automata.consume(TokenImpl.forFixedToken(TokenType.ASTERISK, 1, 2));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 3));
+        automata.consume(TokenImpl.forFixedToken(TokenType.ASTERISK, 1, 4));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 5));
+        Assert.assertTrue(automata.acceptable());
+        Function<NumberLiteralNode, ASTNode> literalFactory = (n) -> new NonTerminalNode(
+                Rule.PRIMARY_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.LITERAL,
+                        n
+                )
+        );
+
+        ASTNode literal1 = literalFactory.apply(new NumberLiteralNode(1, 1, "1"));
+        ASTNode literal2 = literalFactory.apply(new NumberLiteralNode(1, 3, "1"));
+        ASTNode literal3 = literalFactory.apply(new NumberLiteralNode(1, 5, "1"));
+        ASTNode mult1 = new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, literal1);
+        ASTNode mult2 = new NonTerminalNode(
+                Rule.MULTIPLICATIVE_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.MULTIPLY_EXPRESSION,
+                        mult1,
+                        literal2
+                )
+        );
+        ASTNode mult3 = new NonTerminalNode(
+                Rule.MULTIPLICATIVE_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.MULTIPLY_EXPRESSION,
+                        mult2,
+                        literal3
+                )
+        );
+
+
+
+        Assert.assertEquals(
+                new NonTerminalNode(
+                        Rule.ADDITIVE_EXPRESSION,
+                        mult3
                 ),
                 automata.getResult()
         );
