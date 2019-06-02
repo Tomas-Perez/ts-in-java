@@ -7,8 +7,6 @@ import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -26,22 +24,7 @@ public class LineAutomata extends ParserAutomataImpl {
 
     private static class InitialState extends TransitionState {
         public InitialState() {
-            super(
-                    new Transition() {
-                        ParserAutomata inner = new StatementAutomata();
-
-                        @Override
-                        public boolean consumes(Token token) {
-                            return inner.accepts(token);
-                        }
-
-                        @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ParserAutomataState next = new InnerAutomataState(inner, GotStatementState::new);
-                            return next.transition(token, stack);
-                        }
-                    }
-            );
+            super(new TransitionToAutomata(new StatementAutomata(), GotStatementState::new));
         }
     }
 

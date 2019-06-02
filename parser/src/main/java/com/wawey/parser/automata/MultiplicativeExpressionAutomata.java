@@ -22,20 +22,7 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
     private static class InitialState extends TransitionState {
         public InitialState() {
             super(
-                    new Transition() {
-                        private ParserAutomata inner = new PrimaryExpressionAutomata();
-
-                        @Override
-                        public boolean consumes(Token token) {
-                            return inner.accepts(token);
-                        }
-
-                        @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ParserAutomataState next = new InnerAutomataState(inner, DivideOrMultiplyState::new);
-                            return next.transition(token, stack);
-                        }
-                    }
+                    new TransitionToAutomata(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new)
             );
         }
     }

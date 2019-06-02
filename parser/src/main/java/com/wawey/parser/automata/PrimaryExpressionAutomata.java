@@ -24,34 +24,8 @@ public class PrimaryExpressionAutomata extends ParserAutomataImpl {
 
         public InitialState() {
             super(
-                    new Transition() {
-                        ParserAutomata inner = new LiteralAutomata();
-
-                        @Override
-                        public boolean consumes(Token token) {
-                            return inner.accepts(token);
-                        }
-
-                        @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                            return next.transition(token, stack);
-                        }
-                    },
-                    new Transition() {
-                        ParserAutomata inner = new IdentifierAutomata();
-
-                        @Override
-                        public boolean consumes(Token token) {
-                            return inner.accepts(token);
-                        }
-
-                        @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                            return next.transition(token, stack);
-                        }
-                    },
+                    new TransitionToAutomata(new LiteralAutomata(), AcceptedState::new),
+                    new TransitionToAutomata(new IdentifierAutomata(), AcceptedState::new),
                     new Transition() {
                         @Override
                         public boolean consumes(Token token) {

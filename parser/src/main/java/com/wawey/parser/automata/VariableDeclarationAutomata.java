@@ -48,56 +48,15 @@ public class VariableDeclarationAutomata extends ParserAutomataImpl {
         public PostIdentifierState() {
             super(
                     true,
-                    new Transition() {
-                        private ParserAutomata inner = new TypeAnnotationAutomata();
-
-                        @Override
-                        public boolean consumes(Token token) {
-                            return inner.accepts(token);
-                        }
-
-                        @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ParserAutomataState next = new InnerAutomataState(inner, PostTypeAnnotationState::new);
-                            return next.transition(token, stack);
-                        }
-                    },
-                    new Transition() {
-                        private ParserAutomata inner = new InitializerAutomata();
-
-                        @Override
-                        public boolean consumes(Token token) {
-                            return inner.accepts(token);
-                        }
-
-                        @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                            return next.transition(token, stack);
-                        }
-                    }
+                    new TransitionToAutomata(new TypeAnnotationAutomata(), PostTypeAnnotationState::new),
+                    new TransitionToAutomata(new InitializerAutomata(), AcceptedState::new)
             );
         }
     }
 
     private static class PostTypeAnnotationState extends TransitionState {
         public PostTypeAnnotationState() {
-            super(
-                    new Transition() {
-                        private ParserAutomata inner = new InitializerAutomata();
-
-                        @Override
-                        public boolean consumes(Token token) {
-                            return inner.accepts(token);
-                        }
-
-                        @Override
-                        public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                            ParserAutomataState next = new InnerAutomataState(inner, AcceptedState::new);
-                            return next.transition(token, stack);
-                        }
-                    }
-            );
+            super(new TransitionToAutomata(new InitializerAutomata(), AcceptedState::new));
         }
     }
 }
