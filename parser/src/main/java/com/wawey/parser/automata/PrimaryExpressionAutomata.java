@@ -32,7 +32,6 @@ public class PrimaryExpressionAutomata implements ParserAutomata {
 
     @Override
     public ASTNode getResult() {
-        System.out.println(stack);
         return new NonTerminalNode(Rule.PRIMARY_EXPRESSION, Collections.singletonList(stack.peek()));
     }
 
@@ -49,26 +48,30 @@ public class PrimaryExpressionAutomata implements ParserAutomata {
     private class InitialState implements ParserAutomataState {
         private List<Transition> transitions = Arrays.asList(
                 new Transition() {
+                    ParserAutomata inner = new LiteralAutomata();
+
                     @Override
                     public boolean consumes(Token token) {
-                        return token.getType() == TokenType.NUMBER_LITERAL || token.getType() == TokenType.STRING_LITERAL;
+                        return inner.accepts(token);
                     }
 
                     @Override
                     public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(new LiteralAutomata(), AcceptanceState::new);
+                        ParserAutomataState next = new InnerAutomataState(inner, AcceptanceState::new);
                         return next.transition(token, stack);
                     }
                 },
                 new Transition() {
+                    ParserAutomata inner = new IdentifierAutomata();
+
                     @Override
                     public boolean consumes(Token token) {
-                        return token.getType() == TokenType.IDENTIFIER;
+                        return inner.accepts(token);
                     }
 
                     @Override
                     public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(new IdentifierAutomata(), AcceptanceState::new);
+                        ParserAutomataState next = new InnerAutomataState(inner, AcceptanceState::new);
                         return next.transition(token, stack);
                     }
                 },

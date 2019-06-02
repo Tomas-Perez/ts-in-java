@@ -17,7 +17,7 @@ public class MultiplicativeExpressionAutomata implements ParserAutomata {
     private ParserAutomataState currentState;
 
     public MultiplicativeExpressionAutomata() {
-        this.currentState = null;
+        this.currentState = new InitialState();
     }
 
     @Override
@@ -32,38 +32,23 @@ public class MultiplicativeExpressionAutomata implements ParserAutomata {
 
     @Override
     public boolean accepts(Token token) {
-        return false;
+        return currentState.accepts(token);
     }
 
     @Override
     public ASTNode getResult() {
-        System.out.println(stack);
         return new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, Collections.singletonList(stack.peek()));
     }
 
     @Override
     public void reset() {
-        currentState = null;
+        currentState = new InitialState();
     }
 
     private class InitialState implements ParserAutomataState {
-        private List<Transition> transitions = Arrays.asList(
+        private List<Transition> transitions = Collections.singletonList(
                 new Transition() {
                     private ParserAutomata inner = new PrimaryExpressionAutomata();
-
-                    @Override
-                    public boolean consumes(Token token) {
-                        return inner.accepts(token);
-                    }
-
-                    @Override
-                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
-                        ParserAutomataState next = new InnerAutomataState(inner, AcceptanceState::new);
-                        return next.transition(token, stack);
-                    }
-                },
-                new Transition() {
-                    private ParserAutomata inner = new MultiplicativeExpressionAutomata();
 
                     @Override
                     public boolean consumes(Token token) {
@@ -116,19 +101,60 @@ public class MultiplicativeExpressionAutomata implements ParserAutomata {
     }
 
     private class DivideOrMultiplyState implements ParserAutomataState {
+        private List<Transition> transitions = Arrays.asList(
+                new Transition() {
+                    @Override
+                    public boolean consumes(Token token) {
+                        return token.getType() == TokenType.ASTERISK;
+                    }
+
+                    @Override
+                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                        ASTNode left = stack.pop();
+                        stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, Collections.singletonList(left)));
+                        return new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
+                            ASTNode r = s.pop();
+                            ASTNode l = s.pop();
+                            stack.push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, Arrays.asList(l, r)));
+                        });
+                    }
+                },
+                new Transition() {
+                    @Override
+                    public boolean consumes(Token token) {
+                        return token.getType() == TokenType.FORWARD_SLASH;
+                    }
+
+                    @Override
+                    public ParserAutomataState nextState(Token token, Stack<ASTNode> stack) {
+                        ASTNode left = stack.pop();
+                        stack.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, Collections.singletonList(left)));
+                        return new InnerAutomataState(new PrimaryExpressionAutomata(), AcceptanceState::new, (s) -> {
+                            ASTNode r = s.pop();
+                            ASTNode l = s.pop();
+                            stack.push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, Arrays.asList(l, r)));
+                        });
+                    }
+                }
+        );
+
         @Override
         public ParserAutomataState transition(Token token, Stack<ASTNode> stack) {
-            return null;
+            return transitions.stream()
+                    .filter(t -> t.consumes(token))
+                    .findFirst()
+                    .map(t -> t.nextState(token, stack))
+                    .orElseThrow(NoTransitionException::new);
         }
 
         @Override
         public boolean isAcceptable() {
-            return false;
+            return true;
         }
 
         @Override
         public boolean accepts(Token token) {
-            return false;
+            return transitions.stream().anyMatch(t -> t.consumes(token));
         }
     }
 }
