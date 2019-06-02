@@ -168,4 +168,48 @@ public class AdditiveExpressionAutomataTest {
         );
         Assert.assertEquals(expected, automata.getResult());
     }
+
+    @Test
+    public void shouldBuildATreeOf_MultiplicativeExp_MultiplyExp_WhenGivenTokensForMultiplication() {
+        ParserAutomata automata = new AdditiveExpressionAutomata();
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1));
+        automata.consume(TokenImpl.forFixedToken(TokenType.ASTERISK, 1, 2));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 3));
+        Assert.assertTrue(automata.acceptable());
+        ASTNode left = new NonTerminalNode(
+                Rule.MULTIPLICATIVE_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.PRIMARY_EXPRESSION,
+                        new NonTerminalNode(
+                                Rule.LITERAL,
+                                new NumberLiteralNode(1, 1, "1")
+                        )
+
+                )
+
+        );
+        ASTNode right = new NonTerminalNode(
+                Rule.PRIMARY_EXPRESSION,
+                new NonTerminalNode(
+                        Rule.LITERAL,
+                        new NumberLiteralNode(1, 3, "1")
+                )
+        );
+
+
+        Assert.assertEquals(
+                new NonTerminalNode(
+                        Rule.ADDITIVE_EXPRESSION,
+                        new NonTerminalNode(
+                                Rule.MULTIPLICATIVE_EXPRESSION,
+                                new NonTerminalNode(
+                                        Rule.MULTIPLY_EXPRESSION,
+                                        left,
+                                        right
+                                )
+                        )
+                ),
+                automata.getResult()
+        );
+    }
 }

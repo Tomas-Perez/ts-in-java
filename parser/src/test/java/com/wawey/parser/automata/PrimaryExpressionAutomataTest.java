@@ -51,7 +51,16 @@ public class PrimaryExpressionAutomataTest {
         Assert.assertEquals(
                 new NonTerminalNode(
                         Rule.PRIMARY_EXPRESSION,
-                        new IdentifierNode(1, 2, "abc12")
+                        new NonTerminalNode(
+                                Rule.ADDITIVE_EXPRESSION,
+                                new NonTerminalNode(
+                                        Rule.MULTIPLICATIVE_EXPRESSION,
+                                        new NonTerminalNode(
+                                                Rule.PRIMARY_EXPRESSION,
+                                                new IdentifierNode(1, 2, "abc12")
+                                        )
+                                )
+                        )
                 ),
                 parserAutomata.getResult()
         );
