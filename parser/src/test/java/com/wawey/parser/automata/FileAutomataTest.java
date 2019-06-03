@@ -102,4 +102,45 @@ public class FileAutomataTest {
 
         Assert.assertEquals(expected, automata.getResult());
     }
+
+    @Test
+    public void shouldBuildATreeOf_File_FileLine_Line_WhenGiven2Lines() {
+        ParserAutomata automata = new FileAutomata();
+        automata.consume(TokenImpl.forFixedToken(TokenType.LET, 1, 1));
+        automata.consume(new TokenImpl(TokenType.IDENTIFIER, "a", 1, 4));
+        automata.consume(TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 5));
+        automata.consume(TokenImpl.forFixedToken(TokenType.LET, 2, 1));
+        automata.consume(new TokenImpl(TokenType.IDENTIFIER, "b", 2, 4));
+        automata.consume(TokenImpl.forFixedToken(TokenType.SEMICOLON, 2, 5));
+        Assert.assertTrue(automata.acceptable());
+
+        ASTNode expected = new NonTerminalNode(
+                Rule.FILE,
+                new NonTerminalNode(
+                        Rule.FILE,
+                        new NonTerminalNode(
+                                Rule.LINE,
+                                new NonTerminalNode(
+                                        Rule.STATEMENT,
+                                        new NonTerminalNode(
+                                                Rule.VARIABLE_DECLARATION,
+                                                new IdentifierNode(1, 4, "a")
+                                        )
+                                )
+                        )
+                ),
+                new NonTerminalNode(
+                        Rule.LINE,
+                        new NonTerminalNode(
+                                Rule.STATEMENT,
+                                new NonTerminalNode(
+                                        Rule.VARIABLE_DECLARATION,
+                                        new IdentifierNode(2, 4, "b")
+                                )
+                        )
+                )
+        );
+
+        Assert.assertEquals(expected, automata.getResult());
+    }
 }
