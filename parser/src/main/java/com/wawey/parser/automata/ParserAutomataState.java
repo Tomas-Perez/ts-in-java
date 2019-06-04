@@ -1,12 +1,11 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.Token;
 import com.wawey.parser.ast.ASTNode;
 
-import java.util.Stack;
-
 public interface ParserAutomataState {
-    StateChange transition(Token token, Stack<ASTNode> stack);
+    StateChange transition(Token token, ImmutableStack<ASTNode> stack);
     boolean isAcceptable();
     boolean accepts(Token token);
 }

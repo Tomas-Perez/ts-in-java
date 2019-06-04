@@ -1,13 +1,11 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
-import com.wawey.parser.ast.NonTerminalNode;
-
-import java.util.Stack;
 
 public class PrimaryExpressionAutomata extends ParserAutomataImpl {
 
@@ -28,7 +26,7 @@ public class PrimaryExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                        public StateChange nextState(Token token, ImmutableStack<ASTNode> stack) {
                             return new StateChangeImpl(
                                     new InnerAutomataState(new AdditiveExpressionAutomata(), RightParenState::new),
                                     stack
@@ -41,7 +39,7 @@ public class PrimaryExpressionAutomata extends ParserAutomataImpl {
 
     private static class RightParenState implements ParserAutomataState {
         @Override
-        public StateChange transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, ImmutableStack<ASTNode> stack) {
             if (accepts(token)) {
                 return new StateChangeImpl(
                         new AcceptedState(),

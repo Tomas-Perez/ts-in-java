@@ -1,5 +1,6 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
@@ -43,13 +44,11 @@ public class TerminalNodeParser extends ParserAutomataImpl {
         }
 
         @Override
-        public StateChangeImpl transition(Token token, Stack<ASTNode> stack) {
+        public StateChangeImpl transition(Token token, ImmutableStack<ASTNode> stack) {
             if (accepts(token)) {
-                Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
-                copy.push(nodeMapper.apply(token));
                 return new StateChangeImpl(
                         new AcceptedState(),
-                        copy
+                        stack.push(nodeMapper.apply(token))
                 );
             } else {
                 throw new NoTransitionException();

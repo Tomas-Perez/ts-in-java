@@ -1,5 +1,6 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
@@ -34,17 +35,21 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
-                            Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
-                            ASTNode left = copy.pop();
-                            copy.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
+                        public StateChange nextState(Token token, ImmutableStack<ASTNode> stack) {
+                            ImmutableStack.PopResult<ASTNode> popResult = stack.pop();
+                            ASTNode left = popResult.getElement();
+                            ImmutableStack<ASTNode> newStack =
+                                    popResult.getStack()
+                                            .push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
                             return new StateChangeImpl(
                                     new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
-                                        ASTNode r = s.pop();
-                                        ASTNode l = s.pop();
-                                        s.push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, l, r));
+                                        ImmutableStack.PopResult<ASTNode> popResult1 = s.pop();
+                                        ImmutableStack.PopResult<ASTNode> popResult2 = popResult1.getStack().pop();
+                                        ASTNode r = popResult1.getElement();
+                                        ASTNode l = popResult2.getElement();
+                                        return popResult2.getStack().push(new NonTerminalNode(Rule.MULTIPLY_EXPRESSION, l, r));
                                     }),
-                                    copy
+                                    newStack
                             );
                         }
                     },
@@ -55,17 +60,21 @@ public class MultiplicativeExpressionAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
-                            Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
-                            ASTNode left = copy.pop();
-                            copy.push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
+                        public StateChange nextState(Token token, ImmutableStack<ASTNode> stack) {
+                            ImmutableStack.PopResult<ASTNode> popResult = stack.pop();
+                            ASTNode left = popResult.getElement();
+                            ImmutableStack<ASTNode> newStack =
+                                    popResult.getStack()
+                                            .push(new NonTerminalNode(Rule.MULTIPLICATIVE_EXPRESSION, left));
                             return new StateChangeImpl(
                                     new InnerAutomataState(new PrimaryExpressionAutomata(), DivideOrMultiplyState::new, (s) -> {
-                                        ASTNode r = s.pop();
-                                        ASTNode l = s.pop();
-                                        s.push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, l, r));
+                                        ImmutableStack.PopResult<ASTNode> popResult1 = s.pop();
+                                        ImmutableStack.PopResult<ASTNode> popResult2 = popResult1.getStack().pop();
+                                        ASTNode r = popResult1.getElement();
+                                        ASTNode l = popResult2.getElement();
+                                        return popResult2.getStack().push(new NonTerminalNode(Rule.DIVIDE_EXPRESSION, l, r));
                                     }),
-                                    copy
+                                    newStack
                             );
                         }
                     }

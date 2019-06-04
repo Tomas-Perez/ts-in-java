@@ -1,26 +1,25 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.parser.ast.ASTNode;
 
-import java.util.Stack;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class InnerAutomataState implements ParserAutomataState {
     private final ParserAutomata automata;
     private final Supplier<ParserAutomataState> next;
-    private final Consumer<Stack<ASTNode>> onFinish;
+    private final Function<ImmutableStack<ASTNode>, ImmutableStack<ASTNode>> onFinish;
 
     public InnerAutomataState(ParserAutomata automata, Supplier<ParserAutomataState> next) {
         this.automata = automata;
         this.next = next;
-        this.onFinish = (s) -> {
-        };
+        this.onFinish = Function.identity();
     }
 
-    public InnerAutomataState(ParserAutomata automata, Supplier<ParserAutomataState> next, Consumer<Stack<ASTNode>> onFinish) {
+    public InnerAutomataState(ParserAutomata automata, Supplier<ParserAutomataState> next, Function<ImmutableStack<ASTNode>, ImmutableStack<ASTNode>> onFinish) {
         this.automata = automata;
         this.next = next;
         this.onFinish = onFinish;
@@ -32,18 +31,17 @@ public class InnerAutomataState implements ParserAutomataState {
     }
 
     @Override
-    public StateChange transition(Token token, Stack<ASTNode> stack) {
-        Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
+    public StateChange transition(Token token, ImmutableStack<ASTNode> stack) {
         automata.consume(token);
         if (automata.acceptable()) {
-            copy.push(automata.getResult());
-            onFinish.accept(copy);
+            ImmutableStack<ASTNode> newStack = stack.push(automata.getResult());
+            ImmutableStack<ASTNode> afterFinish = onFinish.apply(newStack);
             return new StateChangeImpl(
                     new DualState(this, next.get()),
-                    copy
+                    afterFinish
             );
         }
-        return new StateChangeImpl(this, copy);
+        return new StateChangeImpl(this, stack);
     }
 
     @Override
@@ -61,11 +59,10 @@ public class InnerAutomataState implements ParserAutomataState {
         }
 
         @Override
-        public StateChange transition(Token token, Stack<ASTNode> stack) {
+        public StateChange transition(Token token, ImmutableStack<ASTNode> stack) {
             try {
-                Stack<ASTNode> copy = (Stack<ASTNode>) stack.clone();
-                copy.pop();
-                return first.transition(token, copy);
+                ImmutableStack<ASTNode> newStack = stack.pop().getStack();
+                return first.transition(token, newStack);
             } catch (NoTransitionException exc) {
                 return second.transition(token, stack);
             }

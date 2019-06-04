@@ -1,9 +1,9 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.Token;
 import com.wawey.parser.ast.ASTNode;
 
-import java.util.Stack;
 import java.util.function.Supplier;
 
 /**
@@ -24,7 +24,7 @@ public class TransitionToAutomata implements Transition {
     }
 
     @Override
-    public StateChange nextState(Token token, Stack<ASTNode> stack) {
+    public StateChange nextState(Token token, ImmutableStack<ASTNode> stack) {
         ParserAutomataState next = new InnerAutomataState(automata, onFinishTransition);
         return next.transition(token, stack);
     }

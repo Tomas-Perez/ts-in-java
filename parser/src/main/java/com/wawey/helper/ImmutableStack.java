@@ -1,5 +1,7 @@
 package com.wawey.helper;
 
+import java.util.List;
+
 /**
  * @author Tomas Perez Molina
  */
@@ -8,6 +10,7 @@ public interface ImmutableStack<T> extends Iterable<T>{
     T peek();
     PopResult<T> pop();
     boolean isEmpty();
+    List<T> toList();
 
     class PopResult<T> {
         private ImmutableStack<T> stack;

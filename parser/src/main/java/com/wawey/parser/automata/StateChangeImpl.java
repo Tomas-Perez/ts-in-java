@@ -1,5 +1,6 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.parser.ast.ASTNode;
 
 import java.util.Stack;
@@ -9,9 +10,9 @@ import java.util.Stack;
  */
 public class StateChangeImpl implements StateChange{
     private final ParserAutomataState nextState;
-    private final Stack<ASTNode> newStack;
+    private final ImmutableStack<ASTNode> newStack;
 
-    public StateChangeImpl(ParserAutomataState nextState, Stack<ASTNode> newStack) {
+    public StateChangeImpl(ParserAutomataState nextState, ImmutableStack<ASTNode> newStack) {
         this.nextState = nextState;
         this.newStack = newStack;
     }
@@ -22,7 +23,7 @@ public class StateChangeImpl implements StateChange{
     }
 
     @Override
-    public Stack<ASTNode> getNewStack() {
+    public ImmutableStack<ASTNode> getNewStack() {
         return newStack;
     }
 }

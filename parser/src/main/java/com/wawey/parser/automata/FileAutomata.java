@@ -1,11 +1,10 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.Token;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 import com.wawey.parser.ast.NonTerminalNode;
-
-import java.util.Stack;
 
 /**
  * @author Tomas Perez Molina
@@ -32,10 +31,11 @@ public class FileAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                        public StateChange nextState(Token token, ImmutableStack<ASTNode> stack) {
                             ParserAutomataState next = new InnerAutomataState(inner, GotLineState::new, (s) -> {
-                                ASTNode line = s.pop();
-                                s.push(new NonTerminalNode(Rule.FILE, line));
+                                ImmutableStack.PopResult<ASTNode> popResult = s.pop();
+                                ASTNode line = popResult.getElement();
+                                return popResult.getStack().push(new NonTerminalNode(Rule.FILE, line));
                             });
                             return next.transition(token, stack);
                         }
@@ -57,11 +57,13 @@ public class FileAutomata extends ParserAutomataImpl {
                         }
 
                         @Override
-                        public StateChange nextState(Token token, Stack<ASTNode> stack) {
+                        public StateChange nextState(Token token, ImmutableStack<ASTNode> stack) {
                             ParserAutomataState next = new InnerAutomataState(inner, GotLineState::new, (s) -> {
-                                ASTNode line = s.pop();
-                                ASTNode file = s.pop();
-                                s.push(new NonTerminalNode(Rule.FILE, file, line));
+                                ImmutableStack.PopResult<ASTNode> popResult1 = s.pop();
+                                ImmutableStack.PopResult<ASTNode> popResult2 = popResult1.getStack().pop();
+                                ASTNode line = popResult1.getElement();
+                                ASTNode file = popResult2.getElement();
+                                return popResult2.getStack().push(new NonTerminalNode(Rule.FILE, file, line));
                             });
                             return next.transition(token, stack);
                         }

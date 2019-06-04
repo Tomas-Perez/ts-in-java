@@ -1,10 +1,9 @@
 package com.wawey.parser.automata;
 
+import com.wawey.helper.ImmutableStack;
 import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.parser.ast.ASTNode;
-
-import java.util.Stack;
 
 /**
  * @author Tomas Perez Molina
@@ -21,7 +20,7 @@ public class AcceptedState implements ParserAutomataState {
     }
 
     @Override
-    public StateChange transition(Token token, Stack<ASTNode> stack) {
+    public StateChange transition(Token token, ImmutableStack<ASTNode> stack) {
         throw new NoTransitionException();
     }
 }

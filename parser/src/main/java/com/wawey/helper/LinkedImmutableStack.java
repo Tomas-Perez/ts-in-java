@@ -55,6 +55,11 @@ public class LinkedImmutableStack<T> implements ImmutableStack<T> {
     }
 
     @Override
+    public java.util.List<T> toList() {
+        return list.reverse().toJavaList();
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(list);
     }
@@ -63,6 +68,7 @@ public class LinkedImmutableStack<T> implements ImmutableStack<T> {
         return new LinkedImmutableStack<>(List.nil());
     }
 
+    @SafeVarargs
     public static <T> ImmutableStack<T> of(T... ts) {
         return new LinkedImmutableStack<>(List.list(ts));
     }
