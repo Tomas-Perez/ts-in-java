@@ -40,6 +40,11 @@ public class NonTerminalNode implements ASTNode {
     }
 
     @Override
+    public <R> R accept(ASTVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
     public List<LineColumnRangePair> getColumnRanges() {
         Map<Integer, List<LineColumnRangePair>> byLine =
                 children.stream()

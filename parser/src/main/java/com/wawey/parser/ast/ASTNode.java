@@ -9,4 +9,5 @@ public interface ASTNode {
     Rule getRule();
     int getStartLine();
     List<LineColumnRangePair> getColumnRanges();
+    <R> R accept(ASTVisitor<R> visitor);
 }

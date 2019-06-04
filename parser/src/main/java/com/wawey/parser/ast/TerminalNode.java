@@ -39,6 +39,11 @@ public class TerminalNode implements ASTNode {
     }
 
     @Override
+    public <R> R accept(ASTVisitor<R> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
