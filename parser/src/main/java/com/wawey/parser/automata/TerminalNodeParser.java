@@ -1,13 +1,11 @@
 package com.wawey.parser.automata;
 
 import com.wawey.helper.ImmutableStack;
-import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
 
-import java.util.Stack;
 import java.util.function.Function;
 
 /**
@@ -51,7 +49,7 @@ public class TerminalNodeParser extends ParserAutomataImpl {
                         stack.push(nodeMapper.apply(token))
                 );
             } else {
-                throw new NoTransitionException();
+                throw new NoTransitionException(token);
             }
         }
     }

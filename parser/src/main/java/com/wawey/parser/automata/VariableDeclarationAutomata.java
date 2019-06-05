@@ -1,7 +1,6 @@
 package com.wawey.parser.automata;
 
 import com.wawey.helper.ImmutableStack;
-import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
@@ -23,7 +22,7 @@ public class VariableDeclarationAutomata extends ParserAutomataImpl {
                         new InnerAutomataState(new IdentifierAutomata(), PostIdentifierState::new),
                         stack
                 );
-            } else throw new NoTransitionException();
+            } else throw new NoTransitionException(token);
         }
 
         @Override
@@ -49,7 +48,7 @@ public class VariableDeclarationAutomata extends ParserAutomataImpl {
 
     private static class PostTypeAnnotationState extends TransitionState {
         public PostTypeAnnotationState() {
-            super(new TransitionToAutomata(new InitializerAutomata(), AcceptedState::new));
+            super(true, new TransitionToAutomata(new InitializerAutomata(), AcceptedState::new));
         }
     }
 }

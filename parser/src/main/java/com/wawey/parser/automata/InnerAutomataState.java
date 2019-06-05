@@ -1,7 +1,6 @@
 package com.wawey.parser.automata;
 
 import com.wawey.helper.ImmutableStack;
-import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.parser.ast.ASTNode;
 

@@ -1,7 +1,6 @@
 package com.wawey.parser.automata;
 
 import com.wawey.helper.ImmutableStack;
-import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.parser.ast.ASTNode;
 
@@ -48,7 +47,7 @@ public class TransitionState implements ParserAutomataState {
                 .filter(t -> t.consumes(token))
                 .findFirst()
                 .map(t -> t.nextState(token, stack))
-                .orElseThrow(NoTransitionException::new);
+                .orElseThrow(() -> new NoTransitionException(token));
     }
 
     @Override

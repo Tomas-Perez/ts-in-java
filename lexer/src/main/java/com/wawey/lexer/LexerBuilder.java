@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class LexerBuilder {
     private static final AutomataFactory factory = new AutomataFactory();
 
-    static Lexer buildTSLexer() {
+    public static Lexer buildTSLexer() {
         List<TokenMatcher> keywordMatchers =
                 Arrays.stream(TokenType.values())
                         .filter(TokenType::isFixed)

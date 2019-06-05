@@ -1,7 +1,6 @@
 package com.wawey.parser.automata;
 
 import com.wawey.helper.ImmutableStack;
-import com.wawey.lexer.NoTransitionException;
 import com.wawey.lexer.Token;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
@@ -23,7 +22,7 @@ public class PrintStatementAutomata extends ParserAutomataImpl {
                         new PostPrintState(),
                         stack
                 );
-            } else throw new NoTransitionException();
+            } else throw new NoTransitionException(token);
         }
 
         @Override
@@ -45,7 +44,7 @@ public class PrintStatementAutomata extends ParserAutomataImpl {
                         new InnerAutomataState(new AdditiveExpressionAutomata(), RightParenState::new),
                         stack
                 );
-            } else throw new NoTransitionException();
+            } else throw new NoTransitionException(token);
         }
 
         @Override
@@ -67,7 +66,7 @@ public class PrintStatementAutomata extends ParserAutomataImpl {
                         new AcceptedState(),
                         stack
                 );
-            } else throw new NoTransitionException();
+            } else throw new NoTransitionException(token);
         }
 
         @Override
