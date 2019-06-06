@@ -1,14 +1,13 @@
-package com.wawey.parser.automata;
+package com.wawey.parser;
 
 import com.wawey.lexer.Token;
-import com.wawey.parser.Rule;
 
 public class UnexpectedTokenException extends RuntimeException {
-    public UnexpectedTokenException(Rule rule, Token token) {
+    public UnexpectedTokenException(Token token) {
         super(
                 String.format(
-                        "Trying to parse rule: %s found unexpected Token \"%s\" at line %d column %d",
-                        rule,
+                        "Unexpected %s Token \"%s\" at line %d column %d",
+                        token.getType().name(),
                         token.getLexeme(),
                         token.getLine(),
                         token.getStartColumn()

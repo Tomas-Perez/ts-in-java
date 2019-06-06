@@ -138,7 +138,6 @@ public class AutomataParserTest {
         Lexer lexer = LexerBuilder.buildTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         List<Token> tokens = lexer.lex(input);
-        tokens.stream().map(t -> String.format("%s, %s", t.getType(), t.getLexeme())).forEach(System.out::println);
         ASTNode result = parser.parse(tokens);
         ASTNode firstVar = new NonTerminalNode(
                 Rule.LINE,
@@ -187,5 +186,23 @@ public class AutomataParserTest {
                 )
         );
         Assert.assertEquals(expected, result);
+    }
+
+    @Test(expected = UnexpectedEndOfFileException.class)
+    public void shoudThrowUnexpectedEOFWhenMissingASemicolon() {
+        String input = "let a : number";
+        Lexer lexer = LexerBuilder.buildTSLexer();
+        Parser parser = new AutomataParser(new FileAutomata());
+        List<Token> tokens = lexer.lex(input);
+        parser.parse(tokens);
+    }
+
+    @Test(expected = UnexpectedTokenException.class)
+    public void shoudThrowUnexpectedTokenWhenGivenAnExtraSemicolon() {
+        String input = "let a : number;;";
+        Lexer lexer = LexerBuilder.buildTSLexer();
+        Parser parser = new AutomataParser(new FileAutomata());
+        List<Token> tokens = lexer.lex(input);
+        parser.parse(tokens);
     }
 }
