@@ -4,11 +4,12 @@ package com.wawey.lexer;
  * @author Tomas Perez Molina
  */
 public enum TokenType {
-    STRING_LITERAL(),
-    NUMBER_LITERAL(),
-    IDENTIFIER(),
-    SPACE(),
-    NEWLINE(),
+    STRING_LITERAL,
+    NUMBER_LITERAL,
+    IDENTIFIER,
+    SPACE,
+    NEWLINE,
+    EOF,
     STRING_TYPE("string"),
     NUMBER_TYPE("number"),
     PLUS("+"),
@@ -21,8 +22,7 @@ public enum TokenType {
     COLON(":"),
     SEMICOLON(";"),
     LET("let"),
-    PRINT("print"),
-    EOF("eof");
+    PRINT("print");
 
     private String lexeme;
     private boolean fixed;

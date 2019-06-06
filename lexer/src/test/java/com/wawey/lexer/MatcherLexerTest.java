@@ -15,7 +15,7 @@ public class MatcherLexerTest {
         Lexer letLexer = new MatcherLexer(matcher);
         List<Token> expected = Arrays.asList(
                 TokenImpl.forFixedToken(TokenType.LET, 1, 1),
-                TokenImpl.forFixedToken(TokenType.EOF, 1, 4)
+                new TokenImpl(TokenType.EOF, "", 1, 4)
         );
         Assert.assertEquals(expected, letLexer.lex("let"));
     }
@@ -31,7 +31,7 @@ public class MatcherLexerTest {
                 TokenImpl.forFixedToken(TokenType.LET, 1, 7),
                 TokenImpl.forFixedToken(TokenType.LET, 1, 10),
                 TokenImpl.forFixedToken(TokenType.LET, 1, 13),
-                TokenImpl.forFixedToken(TokenType.EOF, 1, 16)
+                new TokenImpl(TokenType.EOF, "", 1, 16)
         );
         Assert.assertEquals(expected, letLexer.lex("letletletletlet"));
     }
@@ -49,7 +49,7 @@ public class MatcherLexerTest {
                 TokenImpl.forFixedToken(TokenType.LET, 2, 1),
                 TokenImpl.forFixedToken(TokenType.LET, 2, 4),
                 TokenImpl.forFixedToken(TokenType.LET, 2, 7),
-                TokenImpl.forFixedToken(TokenType.EOF, 2, 10)
+                new TokenImpl(TokenType.EOF, "", 2, 10)
         );
         Assert.assertEquals(expected, letLexer.lex("letlet\nletletlet"));
     }
@@ -63,7 +63,7 @@ public class MatcherLexerTest {
         Lexer letLexer = new MatcherLexer(letMatcher, newLineMatcher);
         List<Token> expected = Arrays.asList(
                 TokenImpl.forFixedToken(TokenType.LET, 2, 1),
-                TokenImpl.forFixedToken(TokenType.EOF, 3, 1)
+                new TokenImpl(TokenType.EOF, "", 3, 1)
         );
         Assert.assertEquals(expected, letLexer.lex("\nlet\n"));
     }
@@ -76,14 +76,14 @@ public class MatcherLexerTest {
         Lexer letFirstLexer = new MatcherLexer(letMatcher, otherMatcher);
         List<Token> letExpected = Arrays.asList(
                 TokenImpl.forFixedToken(TokenType.LET, 1, 1),
-                TokenImpl.forFixedToken(TokenType.EOF, 1, 4)
+                new TokenImpl(TokenType.EOF, "", 1, 4)
         );
         Assert.assertEquals(letExpected, letFirstLexer.lex("let"));
 
         Lexer idFirstLexer = new MatcherLexer(otherMatcher, letMatcher);
         List<Token> idExpected = Arrays.asList(
                 new TokenImpl(TokenType.IDENTIFIER, "let", 1, 1),
-                TokenImpl.forFixedToken(TokenType.EOF, 1, 4)
+                new TokenImpl(TokenType.EOF, "", 1, 4)
         );
         Assert.assertEquals(idExpected, idFirstLexer.lex("let"));
     }
@@ -98,7 +98,7 @@ public class MatcherLexerTest {
     public void baseLexerShouldReturnEOFWhenGivenEmptyString() {
         Lexer baseLexer = new MatcherLexer();
         Assert.assertEquals(
-                Collections.singletonList(TokenImpl.forFixedToken(TokenType.EOF, 1, 1)),
+                Collections.singletonList(new TokenImpl(TokenType.EOF, "", 1, 1)),
                 baseLexer.lex("")
         );
     }
@@ -111,7 +111,7 @@ public class MatcherLexerTest {
         TokenMatcher newLineMatcher = new AutomataTokenMatcher(TokenType.NEWLINE, newLineAutomata);
         Lexer lexer = new MatcherLexer(letMatcher, newLineMatcher);
         Assert.assertEquals(
-                Collections.singletonList(TokenImpl.forFixedToken(TokenType.EOF, 1, 1)),
+                Collections.singletonList(new TokenImpl(TokenType.EOF, "", 1, 1)),
                 lexer.lex("")
         );
     }

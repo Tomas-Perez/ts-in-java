@@ -44,7 +44,7 @@ public class MatcherLexer implements Lexer {
             Token token = buildToken(state.line, state.column, alreadyMatching);
             state = state.addToken(token);
         }
-        Token eof = TokenImpl.forFixedToken(TokenType.EOF, state.line, state.column);
+        Token eof = new TokenImpl(TokenType.EOF, "", state.line, state.column);
         state = state.addToken(eof);
         return state.result;
     }

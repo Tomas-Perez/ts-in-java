@@ -13,11 +13,7 @@ public class LexerBuilder {
         List<TokenMatcher> keywordMatchers =
                 Arrays.stream(TokenType.values())
                         .filter(TokenType::isFixed)
-                        .map(t -> new BasicToken(t, t.getLexeme()))
-                        .map(t -> new AutomataTokenMatcher(
-                                t.getType(),
-                                factory.automataFor(t.getLexeme())
-                        ))
+                        .map(t -> new AutomataTokenMatcher(t, factory.automataFor(t.getLexeme())))
                         .collect(Collectors.toList());
         TokenMatcher idMatcher = new AutomataTokenMatcher(
                 TokenType.IDENTIFIER,
