@@ -16,7 +16,8 @@ public class TSLexerTest {
                 TokenImpl.forFixedToken(TokenType.LEFT_PAREN, 1, 6),
                 new TokenImpl(TokenType.NUMBER_LITERAL, "3", 1, 7),
                 TokenImpl.forFixedToken(TokenType.RIGHT_PAREN, 1, 8),
-                TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 9)
+                TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 9),
+                TokenImpl.forFixedToken(TokenType.EOF, 1, 10)
         );
         Assert.assertEquals(expected, actual);
     }
@@ -30,7 +31,8 @@ public class TSLexerTest {
                 TokenImpl.forFixedToken(TokenType.LEFT_PAREN, 1, 6),
                 new TokenImpl(TokenType.STRING_LITERAL, "\"hello, world!\"", 1, 7),
                 TokenImpl.forFixedToken(TokenType.RIGHT_PAREN, 1, 22),
-                TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 23)
+                TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 23),
+                TokenImpl.forFixedToken(TokenType.EOF, 1, 24)
         );
         Assert.assertEquals(expected, actual);
     }
@@ -57,7 +59,8 @@ public class TSLexerTest {
                 TokenImpl.forFixedToken(TokenType.LEFT_PAREN, 3, 6),
                 new TokenImpl(TokenType.IDENTIFIER, "a", 3, 7),
                 TokenImpl.forFixedToken(TokenType.RIGHT_PAREN, 3, 8),
-                TokenImpl.forFixedToken(TokenType.SEMICOLON, 3, 9)
+                TokenImpl.forFixedToken(TokenType.SEMICOLON, 3, 9),
+                TokenImpl.forFixedToken(TokenType.EOF, 3, 10)
         );
         Assert.assertEquals(expected, actual);
     }
@@ -74,7 +77,8 @@ public class TSLexerTest {
                 TokenImpl.forFixedToken(TokenType.PLUS, 1, 8),
                 new TokenImpl(TokenType.NUMBER_LITERAL, "2", 1, 9),
                 TokenImpl.forFixedToken(TokenType.RIGHT_PAREN, 1, 10),
-                TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 11)
+                TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 11),
+                TokenImpl.forFixedToken(TokenType.EOF, 1, 12)
         );
         Assert.assertEquals(expected, actual);
     }

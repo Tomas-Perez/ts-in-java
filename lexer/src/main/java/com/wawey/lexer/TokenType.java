@@ -21,7 +21,8 @@ public enum TokenType {
     COLON(":"),
     SEMICOLON(";"),
     LET("let"),
-    PRINT("print");
+    PRINT("print"),
+    EOF("eof");
 
     private String lexeme;
     private boolean fixed;
