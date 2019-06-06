@@ -22,20 +22,23 @@ public class AutomataParserTest {
         ASTNode expected = new NonTerminalNode(
                 Rule.FILE,
                 new NonTerminalNode(
-                        Rule.LINE,
+                        Rule.PROGRAM,
                         new NonTerminalNode(
-                                Rule.STATEMENT,
+                                Rule.LINE,
                                 new NonTerminalNode(
-                                        Rule.PRINT_STATEMENT,
+                                        Rule.STATEMENT,
                                         new NonTerminalNode(
-                                                Rule.ADDITIVE_EXPRESSION,
+                                                Rule.PRINT_STATEMENT,
                                                 new NonTerminalNode(
-                                                        Rule.MULTIPLICATIVE_EXPRESSION,
+                                                        Rule.ADDITIVE_EXPRESSION,
                                                         new NonTerminalNode(
-                                                                Rule.PRIMARY_EXPRESSION,
+                                                                Rule.MULTIPLICATIVE_EXPRESSION,
                                                                 new NonTerminalNode(
-                                                                        Rule.LITERAL,
-                                                                        new NumberLiteralNode(1, 7, "3")
+                                                                        Rule.PRIMARY_EXPRESSION,
+                                                                        new NonTerminalNode(
+                                                                                Rule.LITERAL,
+                                                                                new NumberLiteralNode(1, 7, "3")
+                                                                        )
                                                                 )
                                                         )
                                                 )
@@ -68,7 +71,7 @@ public class AutomataParserTest {
 
     @Test
     public void shouldBuildTreeOf_MultipleLinesdasd() {
-        String input = "let a : number;let a : number";
+        String input = "let a : number;let a : number;";
         Lexer lexer = LexerBuilder.buildTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         List<Token> tokens = lexer.lex(input);

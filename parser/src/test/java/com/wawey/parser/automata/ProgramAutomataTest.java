@@ -4,7 +4,6 @@ import com.wawey.lexer.TokenImpl;
 import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.ASTNode;
-import com.wawey.parser.ast.ASTPrettyPrinter;
 import com.wawey.parser.ast.IdentifierNode;
 import com.wawey.parser.ast.NonTerminalNode;
 import org.junit.Assert;
@@ -13,24 +12,24 @@ import org.junit.Test;
 /**
  * @author Tomas Perez Molina
  */
-public class FileAutomataTest {
+public class ProgramAutomataTest {
 
     @Test
     public void isNotAcceptableWhenGivenNothing() {
-        ParserAutomata automata = new FileAutomata();
+        ParserAutomata automata = new ProgramAutomata();
         Assert.assertFalse(automata.acceptable());
     }
 
     @Test
-    public void shouldBuildATreeOf_File_Line_WhenGivenASingleLine() {
-        ParserAutomata automata = new FileAutomata();
+    public void shouldBuildATreeOf_Program_Line_WhenGivenASingleLine() {
+        ParserAutomata automata = new ProgramAutomata();
         automata.consume(TokenImpl.forFixedToken(TokenType.LET, 1, 1));
         automata.consume(new TokenImpl(TokenType.IDENTIFIER, "a", 1, 4));
         automata.consume(TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 5));
         Assert.assertTrue(automata.acceptable());
 
         ASTNode expected = new NonTerminalNode(
-                Rule.FILE,
+                Rule.PROGRAM,
                 new NonTerminalNode(
                         Rule.LINE,
                         new NonTerminalNode(
@@ -47,8 +46,8 @@ public class FileAutomataTest {
     }
 
     @Test
-    public void shouldBuildATreeOf_File_FileLine_FileLine_Line_WhenGiven3Lines() {
-        ParserAutomata automata = new FileAutomata();
+    public void shouldBuildATreeOf_Program_ProgramLine_ProgramLine_Line_WhenGiven3Lines() {
+        ParserAutomata automata = new ProgramAutomata();
         automata.consume(TokenImpl.forFixedToken(TokenType.LET, 1, 1));
         automata.consume(new TokenImpl(TokenType.IDENTIFIER, "a", 1, 4));
         automata.consume(TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 5));
@@ -61,11 +60,11 @@ public class FileAutomataTest {
         Assert.assertTrue(automata.acceptable());
 
         ASTNode expected = new NonTerminalNode(
-                Rule.FILE,
+                Rule.PROGRAM,
                 new NonTerminalNode(
-                        Rule.FILE,
+                        Rule.PROGRAM,
                         new NonTerminalNode(
-                                Rule.FILE,
+                                Rule.PROGRAM,
                                 new NonTerminalNode(
                                         Rule.LINE,
                                         new NonTerminalNode(
@@ -104,8 +103,8 @@ public class FileAutomataTest {
     }
 
     @Test
-    public void shouldBuildATreeOf_File_FileLine_Line_WhenGiven2Lines() {
-        ParserAutomata automata = new FileAutomata();
+    public void shouldBuildATreeOf_Program_ProgramLine_Line_WhenGiven2Lines() {
+        ParserAutomata automata = new ProgramAutomata();
         automata.consume(TokenImpl.forFixedToken(TokenType.LET, 1, 1));
         automata.consume(new TokenImpl(TokenType.IDENTIFIER, "a", 1, 4));
         automata.consume(TokenImpl.forFixedToken(TokenType.SEMICOLON, 1, 5));
@@ -115,9 +114,9 @@ public class FileAutomataTest {
         Assert.assertTrue(automata.acceptable());
 
         ASTNode expected = new NonTerminalNode(
-                Rule.FILE,
+                Rule.PROGRAM,
                 new NonTerminalNode(
-                        Rule.FILE,
+                        Rule.PROGRAM,
                         new NonTerminalNode(
                                 Rule.LINE,
                                 new NonTerminalNode(

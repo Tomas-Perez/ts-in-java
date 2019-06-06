@@ -22,5 +22,6 @@ public enum Rule {
     COVER_INITIALIZED_NAME,
     STATEMENT,
     LINE,
+    PROGRAM,
     FILE
 }
