@@ -12,7 +12,7 @@ import java.util.List;
 
 public class AutomataParserTest {
     @Test
-    public void shouldBuildTreeOf_File_PrintStatment_WhenParsingPrint3() {
+    public void shouldBuildTreeOf_File_PrintStatement_WhenParsingPrint3() {
         Lexer lexer = LexerBuilder.buildTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         ASTNode result = parser.parse(lexer.lex("print(3);"));
@@ -48,7 +48,7 @@ public class AutomataParserTest {
     }
 
     @Test
-    public void shouldBuildTreeOf_File_PrintStatment_WhenParsingPrint3Plus3() {
+    public void shouldBuildTreeOf_File_PrintStatement_WhenParsingPrint3Plus3() {
         Lexer lexer = LexerBuilder.buildTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         ASTNode result = parser.parse(lexer.lex("print(3+3);"));
@@ -100,7 +100,7 @@ public class AutomataParserTest {
     }
 
     @Test
-    public void shouldBuildTreeOf_MultipleLines() {
+    public void shouldBuildTreeOf_VariableDeclaration() {
         String input = "let a : number;";
         Lexer lexer = LexerBuilder.buildTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
@@ -133,7 +133,7 @@ public class AutomataParserTest {
     }
 
     @Test
-    public void shouldBuildTreeOf_MultipleLinesdasd() {
+    public void shouldBuildTreeOf_MultipleVariableDeclarations() {
         String input = "let a : number;let a : number;";
         Lexer lexer = LexerBuilder.buildTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
