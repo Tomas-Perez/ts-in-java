@@ -29,7 +29,7 @@ public class AutomataTokenMatcher implements TokenMatcher {
     @Override
     public BasicToken getBasicToken() {
         if (automata.acceptable()) {
-            return new BasicToken(tokenType, match);
+            return new BasicTokenImpl(tokenType, match);
         } else {
             throw new NoMatchException(tokenType, match);
         }

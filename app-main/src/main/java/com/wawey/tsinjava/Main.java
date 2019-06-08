@@ -29,7 +29,10 @@ public class Main {
         System.out.println("\n\n");
         System.out.println("--------------- OUTPUT ---------------\n\n");
 
-        Lexer lexer = LexerFactory.getTSLexer();
+
+        LexerFactory lexerFactory = new LexerFactory();
+
+        Lexer lexer = lexerFactory.getTSLexer();
         Parser parser = ParserFactory.getTSParser();
         Interpreter interpreter = InterpreterFactory.getTSInterpreter(new StandardOutPrinter());
 

@@ -9,8 +9,9 @@ import java.util.List;
 public class TSLexerTest {
     @Test
     public void lexesNumberPrintStatement() {
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex("print(3);");
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex("print(3);");
         List<Token> expected = Arrays.asList(
                 TokenImpl.forFixedToken(TokenType.PRINT, 1, 1),
                 TokenImpl.forFixedToken(TokenType.LEFT_PAREN, 1, 6),
@@ -24,8 +25,9 @@ public class TSLexerTest {
 
     @Test
     public void lexesStringPrintStatement() {
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex("print(\"hello, world!\");");
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex("print(\"hello, world!\");");
         List<Token> expected = Arrays.asList(
                 TokenImpl.forFixedToken(TokenType.PRINT, 1, 1),
                 TokenImpl.forFixedToken(TokenType.LEFT_PAREN, 1, 6),
@@ -43,8 +45,9 @@ public class TSLexerTest {
                 "let a: number;\n" +
                         "a = 3;\n" +
                         "print(a);";
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex(input);
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex(input);
         List<Token> expected = Arrays.asList(
                 TokenImpl.forFixedToken(TokenType.LET, 1, 1),
                 new TokenImpl(TokenType.IDENTIFIER, "a", 1, 5),
@@ -68,8 +71,9 @@ public class TSLexerTest {
     @Test
     public void lexesSumPrint() {
         String input = "print(1+2);";
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex(input);
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex(input);
         List<Token> expected = Arrays.asList(
                 TokenImpl.forFixedToken(TokenType.PRINT, 1, 1),
                 TokenImpl.forFixedToken(TokenType.LEFT_PAREN, 1, 6),
@@ -86,8 +90,9 @@ public class TSLexerTest {
     @Test
     public void lexesPI() {
         String input = "3.14";
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex(input);
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex(input);
         List<Token> expected = Arrays.asList(
                 new TokenImpl(TokenType.NUMBER_LITERAL, "3.14", 1, 1),
                 new TokenImpl(TokenType.EOF, "", 1, 5)
@@ -98,8 +103,9 @@ public class TSLexerTest {
     @Test
     public void lexesANumberBelow1() {
         String input = "0.14";
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex(input);
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex(input);
         List<Token> expected = Arrays.asList(
                 new TokenImpl(TokenType.NUMBER_LITERAL, "0.14", 1, 1),
                 new TokenImpl(TokenType.EOF, "", 1, 5)
@@ -110,8 +116,9 @@ public class TSLexerTest {
     @Test
     public void lexesAReallySmallNumber() {
         String input = "0.04";
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex(input);
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex(input);
         List<Token> expected = Arrays.asList(
                 new TokenImpl(TokenType.NUMBER_LITERAL, "0.04", 1, 1),
                 new TokenImpl(TokenType.EOF, "", 1, 5)
@@ -122,8 +129,9 @@ public class TSLexerTest {
     @Test
     public void lexesJust1() {
         String input = "1";
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex(input);
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex(input);
         List<Token> expected = Arrays.asList(
                 new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1),
                 new TokenImpl(TokenType.EOF, "", 1, 2)
@@ -134,8 +142,9 @@ public class TSLexerTest {
     @Test
     public void lexesJust0() {
         String input = "0";
-        Lexer tsLexer = LexerFactory.getTSLexer();
-        List<Token> actual = tsLexer.lex(input);
+        LexerFactory lexerFactory = new LexerFactory();
+        Lexer lexer = lexerFactory.getTSLexer();
+        List<Token> actual = lexer.lex(input);
         List<Token> expected = Arrays.asList(
                 new TokenImpl(TokenType.NUMBER_LITERAL, "0", 1, 1),
                 new TokenImpl(TokenType.EOF, "", 1, 2)

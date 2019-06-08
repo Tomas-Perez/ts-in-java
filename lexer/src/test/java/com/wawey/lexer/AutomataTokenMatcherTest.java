@@ -8,7 +8,7 @@ public class AutomataTokenMatcherTest {
     public void letMatcherShouldMatchLetToken() {
         Automata letAutomata = new AutomataFactory().automataFor("let");
         TokenMatcher matcher = new AutomataTokenMatcher(TokenType.LET, letAutomata);
-        BasicToken expected = new BasicToken(TokenType.LET, "let");
+        BasicToken expected = new BasicTokenImpl(TokenType.LET, "let");
         matcher.match('l');
         matcher.match('e');
         matcher.match('t');
@@ -19,7 +19,7 @@ public class AutomataTokenMatcherTest {
     public void letMatcherShouldMatchLetTokenAndNoMore() {
         Automata letAutomata = new AutomataFactory().automataFor("let");
         TokenMatcher matcher = new AutomataTokenMatcher(TokenType.LET, letAutomata);
-        BasicToken expected = new BasicToken(TokenType.LET, "let");
+        BasicToken expected = new BasicTokenImpl(TokenType.LET, "let");
         matcher.match('l');
         matcher.match('e');
         matcher.match('t');
