@@ -36,7 +36,7 @@ public class InnerAutomataState implements ParserAutomataState {
             ImmutableStack<ASTNode> newStack = stack.push(automata.getResult());
             ImmutableStack<ASTNode> afterFinish = onFinish.apply(newStack);
             return new StateChangeImpl(
-                    new DualState(this, next.get()),
+                    new DualState(this, stack, next.get()),
                     afterFinish
             );
         }
@@ -50,18 +50,19 @@ public class InnerAutomataState implements ParserAutomataState {
 
     private static class DualState implements ParserAutomataState {
         final ParserAutomataState first;
+        final ImmutableStack<ASTNode> beforeFinish;
         final ParserAutomataState second;
 
-        public DualState(ParserAutomataState first, ParserAutomataState orNext) {
+        public DualState(ParserAutomataState first, ImmutableStack<ASTNode> beforeFinish, ParserAutomataState second) {
             this.first = first;
-            this.second = orNext;
+            this.beforeFinish = beforeFinish;
+            this.second = second;
         }
 
         @Override
         public StateChange transition(Token token, ImmutableStack<ASTNode> stack) {
             try {
-                ImmutableStack<ASTNode> newStack = stack.pop().getStack();
-                return first.transition(token, newStack);
+                return first.transition(token, beforeFinish);
             } catch (NoTransitionException exc) {
                 return second.transition(token, stack);
             }

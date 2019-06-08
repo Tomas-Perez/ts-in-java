@@ -39,10 +39,17 @@ public class LexerBuilder {
                         .maybeThen(factory.infiniteRegexAutomata("[0-9]"))
                         .build()
         );
-        TokenMatcher singleQuoteStrLiteralMatcher = new AutomataTokenMatcher(TokenType.STRING_LITERAL, factory.delimitedWordAutomata('"'));
-        TokenMatcher doubleQuoteStrLiteralMatcher = new AutomataTokenMatcher(TokenType.STRING_LITERAL, factory.delimitedWordAutomata('\''));
+        TokenMatcher singleQuoteStrLiteralMatcher = new AutomataTokenMatcher(TokenType.STRING_LITERAL, factory.delimitedWordAutomata('"', Arrays.asList('\n', '\r')));
+        TokenMatcher doubleQuoteStrLiteralMatcher = new AutomataTokenMatcher(TokenType.STRING_LITERAL, factory.delimitedWordAutomata('\'', Arrays.asList('\n', '\r')));
         TokenMatcher spaceMatcher = new AutomataTokenMatcher(TokenType.SPACE, factory.infiniteRegexAutomata(" "));
-        TokenMatcher newLineMatcher = new AutomataTokenMatcher(TokenType.NEWLINE, factory.singleCharAutomata('\n'));
+        TokenMatcher crlfMatcher = new AutomataTokenMatcher(
+                TokenType.NEWLINE,
+                new LinkedAutomata.Builder()
+                        .andThen(factory.singleCharAutomata('\r'))
+                        .andThen(factory.singleCharAutomata('\n'))
+                        .build()
+        );
+        TokenMatcher lfMatcher = new AutomataTokenMatcher(TokenType.NEWLINE, factory.singleCharAutomata('\n'));
 
         List<TokenMatcher> matchers =
                 ImmutableList.<TokenMatcher>builder()
@@ -53,7 +60,8 @@ public class LexerBuilder {
                         .add(singleQuoteStrLiteralMatcher)
                         .add(doubleQuoteStrLiteralMatcher)
                         .add(spaceMatcher)
-                        .add(newLineMatcher)
+                        .add(crlfMatcher)
+                        .add(lfMatcher)
                         .build();
 
         return new MatcherLexer(matchers);

@@ -39,7 +39,9 @@ public enum TokenType {
 
     @Override
     public String toString() {
-        return String.format("%s(%s)", name(), lexeme);
+        if (isFixed()) {
+            return String.format("%s(%s)", name(), lexeme);
+        } return name();
     }
 
     public String getLexeme() {

@@ -1,5 +1,7 @@
 package com.wawey.lexer;
 
+import java.util.List;
+
 public class AutomataFactory {
     public Automata automataFor(final String text) {
         AutomataState current = AutomataStateImpl.acceptanceState();
@@ -27,13 +29,13 @@ public class AutomataFactory {
         return new AutomataImpl(initial);
     }
 
-    public Automata delimitedWordAutomata(final char delimiter) {
+    public Automata delimitedWordAutomata(final char delimiter, final List<Character> except) {
         return new LinkedAutomata.Builder()
                 .andThen(singleCharAutomata(delimiter))
                 .maybeThen(
                         new AutomataImpl(
                                 AutomataStateImpl.acceptanceState(
-                                        Transition.selfTransition((c) -> c != delimiter)
+                                        Transition.selfTransition((c) -> c != delimiter && !except.contains(c))
                                 )
                         )
                 )

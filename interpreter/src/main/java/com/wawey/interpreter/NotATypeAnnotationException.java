@@ -7,6 +7,6 @@ import com.wawey.parser.ast.ASTNode;
  */
 public class NotATypeAnnotationException extends RuntimeException {
     public NotATypeAnnotationException(ASTNode node) {
-        super(node + " is not part of a type annotation");
+        super(String.format("\"%s\" is not part of a type annotation", node));
     }
 }

@@ -5,6 +5,6 @@ package com.wawey.interpreter;
  */
 public class UnassignableException extends RuntimeException {
     public UnassignableException(VariableType valueType, VariableType variableType) {
-        super(valueType + " value is not assignable to " + variableType);
+        super(String.format("\"%s\" value is not assignable to \"%s\"", valueType, variableType));
     }
 }

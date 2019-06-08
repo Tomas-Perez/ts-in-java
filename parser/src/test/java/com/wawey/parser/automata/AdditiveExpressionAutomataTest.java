@@ -263,7 +263,7 @@ public class AdditiveExpressionAutomataTest {
     }
 
     @Test
-    public void mix() {
+    public void parsesSumAndMultiplicationMix() {
         ParserAutomata automata = new AdditiveExpressionAutomata();
         automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "5", 1, 1));
         automata.consume(TokenImpl.forFixedToken(TokenType.PLUS, 1, 3));

@@ -5,6 +5,6 @@ package com.wawey.interpreter;
  */
 public class RedeclarationError extends RuntimeException {
     public RedeclarationError(String identifier) {
-        super("Redeclaration of let " + identifier);
+        super(String.format("Redeclaration of let \"%s\"", identifier));
     }
 }

@@ -5,6 +5,6 @@ package com.wawey.interpreter;
  */
 public class ReferenceError extends RuntimeException {
     public ReferenceError(String identifier) {
-        super(identifier + " is not defined");
+        super(String.format("\"%s\" is not defined", identifier));
     }
 }

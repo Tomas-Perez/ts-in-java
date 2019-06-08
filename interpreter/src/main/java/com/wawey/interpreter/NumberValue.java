@@ -22,7 +22,11 @@ public class NumberValue implements Value{
 
     @Override
     public Value sum(Value other) {
-        return new NumberValue(value + other.getNumber());
+        if (other.getType() == VariableType.NUMBER) {
+            return new NumberValue(value + other.getNumber());
+        } else {
+            return new StringValue(value + other.getString());
+        }
     }
 
     @Override

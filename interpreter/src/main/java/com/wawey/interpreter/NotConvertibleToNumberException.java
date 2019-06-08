@@ -5,6 +5,6 @@ package com.wawey.interpreter;
  */
 public class NotConvertibleToNumberException extends RuntimeException{
     public NotConvertibleToNumberException(String value) {
-        super(value + " is not convertible to number");
+        super(String.format("\"%s\" is not convertible to number", value));
     }
 }

@@ -7,6 +7,6 @@ import com.wawey.parser.ast.ASTNode;
  */
 public class NotAnExpressionException extends RuntimeException {
     public NotAnExpressionException(ASTNode node) {
-        super(node + " is not part of an expression");
+        super(String.format("\"%s\" is not part of an expression", node));
     }
 }
