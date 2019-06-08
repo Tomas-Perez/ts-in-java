@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LexerBuilder {
+public class LexerFactory {
     private static final AutomataFactory factory = new AutomataFactory();
 
-    public static Lexer buildTSLexer() {
+    public static Lexer getTSLexer() {
         List<TokenMatcher> keywordMatchers =
                 Arrays.stream(TokenType.values())
                         .filter(TokenType::isFixed)

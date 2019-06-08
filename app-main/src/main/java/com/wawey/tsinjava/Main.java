@@ -1,15 +1,14 @@
 package com.wawey.tsinjava;
 
 import com.wawey.interpreter.Interpreter;
-import com.wawey.interpreter.InterpreterImpl;
+import com.wawey.interpreter.InterpreterFactory;
 import com.wawey.interpreter.StandardOutPrinter;
 import com.wawey.lexer.Lexer;
-import com.wawey.lexer.LexerBuilder;
+import com.wawey.lexer.LexerFactory;
 import com.wawey.lexer.Token;
-import com.wawey.parser.AutomataParser;
 import com.wawey.parser.Parser;
+import com.wawey.parser.ParserFactory;
 import com.wawey.parser.ast.ASTNode;
-import com.wawey.parser.automata.FileAutomata;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,9 +29,9 @@ public class Main {
         System.out.println("\n\n");
         System.out.println("--------------- OUTPUT ---------------\n\n");
 
-        Lexer lexer = LexerBuilder.buildTSLexer();
-        Parser parser = new AutomataParser(new FileAutomata());
-        Interpreter interpreter = new InterpreterImpl(new StandardOutPrinter());
+        Lexer lexer = LexerFactory.getTSLexer();
+        Parser parser = ParserFactory.getTSParser();
+        Interpreter interpreter = InterpreterFactory.getTSInterpreter(new StandardOutPrinter());
 
         try {
             List<Token> tokens = lexer.lex(input);

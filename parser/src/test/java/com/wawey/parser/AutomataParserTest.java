@@ -1,7 +1,7 @@
 package com.wawey.parser;
 
 import com.wawey.lexer.Lexer;
-import com.wawey.lexer.LexerBuilder;
+import com.wawey.lexer.LexerFactory;
 import com.wawey.lexer.Token;
 import com.wawey.parser.ast.*;
 import com.wawey.parser.automata.FileAutomata;
@@ -13,7 +13,7 @@ import java.util.List;
 public class AutomataParserTest {
     @Test
     public void shouldBuildTreeOf_File_PrintStatement_WhenParsingPrint3() {
-        Lexer lexer = LexerBuilder.buildTSLexer();
+        Lexer lexer = LexerFactory.getTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         ASTNode result = parser.parse(lexer.lex("print(3);"));
         ASTNode expected = new NonTerminalNode(
@@ -49,7 +49,7 @@ public class AutomataParserTest {
 
     @Test
     public void shouldBuildTreeOf_File_PrintStatement_WhenParsingPrint3Plus3() {
-        Lexer lexer = LexerBuilder.buildTSLexer();
+        Lexer lexer = LexerFactory.getTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         ASTNode result = parser.parse(lexer.lex("print(3+3);"));
         ASTNode expected = new NonTerminalNode(
@@ -102,7 +102,7 @@ public class AutomataParserTest {
     @Test
     public void shouldBuildTreeOf_VariableDeclaration() {
         String input = "let a : number;";
-        Lexer lexer = LexerBuilder.buildTSLexer();
+        Lexer lexer = LexerFactory.getTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         List<Token> tokens = lexer.lex(input);
         ASTNode result = parser.parse(tokens);
@@ -135,7 +135,7 @@ public class AutomataParserTest {
     @Test
     public void shouldBuildTreeOf_MultipleVariableDeclarations() {
         String input = "let a : number;let a : number;";
-        Lexer lexer = LexerBuilder.buildTSLexer();
+        Lexer lexer = LexerFactory.getTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         List<Token> tokens = lexer.lex(input);
         ASTNode result = parser.parse(tokens);
@@ -191,7 +191,7 @@ public class AutomataParserTest {
     @Test(expected = UnexpectedEndOfFileException.class)
     public void shoudThrowUnexpectedEOFWhenMissingASemicolon() {
         String input = "let a : number";
-        Lexer lexer = LexerBuilder.buildTSLexer();
+        Lexer lexer = LexerFactory.getTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         List<Token> tokens = lexer.lex(input);
         parser.parse(tokens);
@@ -200,7 +200,7 @@ public class AutomataParserTest {
     @Test(expected = UnexpectedTokenException.class)
     public void shoudThrowUnexpectedTokenWhenGivenAnExtraSemicolon() {
         String input = "let a : number;;";
-        Lexer lexer = LexerBuilder.buildTSLexer();
+        Lexer lexer = LexerFactory.getTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         List<Token> tokens = lexer.lex(input);
         parser.parse(tokens);
