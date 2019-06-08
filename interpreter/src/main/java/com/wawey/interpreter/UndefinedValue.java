@@ -20,7 +20,7 @@ public class UndefinedValue implements Value{
 
     @Override
     public Value sum(Value other) {
-        throw new NotConvertibleToNumberException(value);
+        return new StringValue(value + other.getString());
     }
 
     @Override

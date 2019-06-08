@@ -33,9 +33,10 @@ public class Main {
         Lexer lexer = LexerBuilder.buildTSLexer();
         Parser parser = new AutomataParser(new FileAutomata());
         Interpreter interpreter = new InterpreterImpl(new StandardOutPrinter());
-        List<Token> tokens = lexer.lex(input);
-        ASTNode ast = parser.parse(tokens);
+
         try {
+            List<Token> tokens = lexer.lex(input);
+            ASTNode ast = parser.parse(tokens);
             interpreter.interpret(ast);
         } catch (Exception exc) {
             System.err.println(exc.getMessage());

@@ -29,9 +29,9 @@ public class ExecutionContext implements VariableDeclarator, VariablePool {
 
     @Override
     public Value getVariable(String identifier) {
-        Value value = variables.get(identifier).value;
-        if (value == null) throw new ReferenceError(identifier);
-        return value;
+        VariableTypeValue variableTypeValue = variables.get(identifier);
+        if (variableTypeValue == null) throw new ReferenceError(identifier);
+        return variableTypeValue.value;
     }
 
     private static class VariableTypeValue {
