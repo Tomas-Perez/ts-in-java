@@ -36,6 +36,11 @@ public class AutomataTokenMatcher implements TokenMatcher {
     }
 
     @Override
+    public boolean acceptable() {
+        return automata.acceptable();
+    }
+
+    @Override
     public void reset() {
         match = "";
         automata.reset();

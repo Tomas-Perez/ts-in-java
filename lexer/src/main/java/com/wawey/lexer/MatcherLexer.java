@@ -24,11 +24,18 @@ public class MatcherLexer implements Lexer {
             boolean tryAgain;
             do {
                 tryAgain = false;
-                List<TokenMatcher> alreadyMatching = getAlreadyMatching();
+                boolean noPreviousMatch = false;
+                List<TokenMatcher> alreadyMatching = matchers.stream()
+                        .filter(TokenMatcher::isMatching)
+                        .collect(Collectors.toList());
+                if (alreadyMatching.size() == 0) {
+                    noPreviousMatch = true;
+                    alreadyMatching = matchers;
+                }
                 List<TokenMatcher> matchersForChar = alreadyMatching.stream()
                         .filter(m -> m.match(c))
                         .collect(Collectors.toList());
-                if (matchersForChar.size() == 0 && alreadyMatching.size() == 0) {
+                if (matchersForChar.size() == 0 && (alreadyMatching.size() == 0 || noPreviousMatch)) {
                     throw new LexicalError("Unknown character: " + c);
                 } else if (matchersForChar.size() == 0) {
                     Token token = buildToken(state.line, state.column, alreadyMatching);
@@ -49,16 +56,8 @@ public class MatcherLexer implements Lexer {
         return state.result;
     }
 
-    private List<TokenMatcher> getAlreadyMatching() {
-        List<TokenMatcher> alreadyMatching = matchers.stream()
-                .filter(TokenMatcher::isMatching)
-                .collect(Collectors.toList());
-        if (alreadyMatching.size() == 0) alreadyMatching = matchers;
-        return alreadyMatching;
-    }
-
     private Token buildToken(int line, int startColumn, List<TokenMatcher> alreadyMatching) {
-        TokenMatcher matcher = alreadyMatching.get(0);
+        TokenMatcher matcher = alreadyMatching.stream().filter(TokenMatcher::acceptable).findFirst().get();
         BasicToken basicToken = matcher.getBasicToken();
         matchers.forEach(TokenMatcher::reset);
         return new TokenImpl(basicToken, line, startColumn);
