@@ -261,4 +261,15 @@ public class AdditiveExpressionAutomataTest {
                 automata.getResult()
         );
     }
+
+    @Test
+    public void mix() {
+        ParserAutomata automata = new AdditiveExpressionAutomata();
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "5", 1, 1));
+        automata.consume(TokenImpl.forFixedToken(TokenType.PLUS, 1, 3));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "3", 1, 5));
+        automata.consume(TokenImpl.forFixedToken(TokenType.ASTERISK, 1, 7));
+        automata.consume(new TokenImpl(TokenType.NUMBER_LITERAL, "2", 1, 9));
+        Assert.assertTrue(automata.acceptable());
+    }
 }

@@ -5,6 +5,7 @@ import fj.data.List;
 import java.util.EmptyStackException;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Tomas Perez Molina
@@ -57,6 +58,11 @@ public class LinkedImmutableStack<T> implements ImmutableStack<T> {
     @Override
     public java.util.List<T> toList() {
         return list.reverse().toJavaList();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("LinkedImmutableStack(\n%s\n)", toList().stream().map(Objects::toString).collect(Collectors.joining(",\n")));
     }
 
     @Override

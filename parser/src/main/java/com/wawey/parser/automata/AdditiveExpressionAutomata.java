@@ -38,6 +38,7 @@ public class AdditiveExpressionAutomata extends ParserAutomataImpl {
                                             .push(new NonTerminalNode(Rule.ADDITIVE_EXPRESSION, left));
                             return new StateChangeImpl(
                                     new InnerAutomataState(new MultiplicativeExpressionAutomata(), AddOrSubtractState::new, (s) -> {
+                                        System.out.println(s);
                                         ImmutableStack.PopResult<ASTNode> popResult1 = s.pop();
                                         ImmutableStack.PopResult<ASTNode> popResult2 = popResult1.getStack().pop();
                                         ASTNode r = popResult1.getElement();

@@ -63,7 +63,6 @@ public class TerminalNode implements ASTNode {
         return "TerminalNode{" +
                 "value='" + value + '\'' +
                 ", rule=" + rule +
-                ", lineColumnRangePair=" + lineColumnRangePair +
                 '}';
     }
 }
