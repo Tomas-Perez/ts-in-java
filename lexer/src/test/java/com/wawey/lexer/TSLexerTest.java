@@ -82,4 +82,64 @@ public class TSLexerTest {
         );
         Assert.assertEquals(expected, actual);
     }
+
+    @Test
+    public void lexesPI() {
+        String input = "3.14";
+        Lexer tsLexer = LexerBuilder.buildTSLexer();
+        List<Token> actual = tsLexer.lex(input);
+        List<Token> expected = Arrays.asList(
+                new TokenImpl(TokenType.NUMBER_LITERAL, "3.14", 1, 1),
+                new TokenImpl(TokenType.EOF, "", 1, 5)
+        );
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void lexesANumberBelow1() {
+        String input = "0.14";
+        Lexer tsLexer = LexerBuilder.buildTSLexer();
+        List<Token> actual = tsLexer.lex(input);
+        List<Token> expected = Arrays.asList(
+                new TokenImpl(TokenType.NUMBER_LITERAL, "0.14", 1, 1),
+                new TokenImpl(TokenType.EOF, "", 1, 5)
+        );
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void lexesAReallySmallNumber() {
+        String input = "0.04";
+        Lexer tsLexer = LexerBuilder.buildTSLexer();
+        List<Token> actual = tsLexer.lex(input);
+        List<Token> expected = Arrays.asList(
+                new TokenImpl(TokenType.NUMBER_LITERAL, "0.04", 1, 1),
+                new TokenImpl(TokenType.EOF, "", 1, 5)
+        );
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void lexesJust1() {
+        String input = "1";
+        Lexer tsLexer = LexerBuilder.buildTSLexer();
+        List<Token> actual = tsLexer.lex(input);
+        List<Token> expected = Arrays.asList(
+                new TokenImpl(TokenType.NUMBER_LITERAL, "1", 1, 1),
+                new TokenImpl(TokenType.EOF, "", 1, 2)
+        );
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void lexesJust0() {
+        String input = "0";
+        Lexer tsLexer = LexerBuilder.buildTSLexer();
+        List<Token> actual = tsLexer.lex(input);
+        List<Token> expected = Arrays.asList(
+                new TokenImpl(TokenType.NUMBER_LITERAL, "0", 1, 1),
+                new TokenImpl(TokenType.EOF, "", 1, 2)
+        );
+        Assert.assertEquals(expected, actual);
+    }
 }

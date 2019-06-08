@@ -22,7 +22,23 @@ public class LexerBuilder {
                         .maybeThen(factory.infiniteRegexAutomata("[a-zA-Z0-9]"))
                         .build()
         );
-        TokenMatcher numLiteralMatcher = new AutomataTokenMatcher(TokenType.NUMBER_LITERAL, factory.infiniteRegexAutomata("[0-9]"));
+        TokenMatcher numLiteralMatcher1 = new AutomataTokenMatcher(
+                TokenType.NUMBER_LITERAL,
+                new LinkedAutomata.Builder()
+                        .andThen(factory.infiniteRegexAutomata("[1-9]"))
+                        .maybeThen(factory.infiniteRegexAutomata("[0-9]"))
+                        .maybeThen(factory.singleCharAutomata('.'))
+                        .maybeThen(factory.infiniteRegexAutomata("[0-9]"))
+                        .build()
+        );
+        TokenMatcher numLiteralMatcher2 = new AutomataTokenMatcher(
+                TokenType.NUMBER_LITERAL,
+                new LinkedAutomata.Builder()
+                        .andThen(factory.singleCharAutomata('0'))
+                        .maybeThen(factory.singleCharAutomata('.'))
+                        .maybeThen(factory.infiniteRegexAutomata("[0-9]"))
+                        .build()
+        );
         TokenMatcher singleQuoteStrLiteralMatcher = new AutomataTokenMatcher(TokenType.STRING_LITERAL, factory.delimitedWordAutomata('"'));
         TokenMatcher doubleQuoteStrLiteralMatcher = new AutomataTokenMatcher(TokenType.STRING_LITERAL, factory.delimitedWordAutomata('\''));
         TokenMatcher spaceMatcher = new AutomataTokenMatcher(TokenType.SPACE, factory.infiniteRegexAutomata(" "));
@@ -32,7 +48,8 @@ public class LexerBuilder {
                 ImmutableList.<TokenMatcher>builder()
                         .addAll(keywordMatchers)
                         .add(idMatcher)
-                        .add(numLiteralMatcher)
+                        .add(numLiteralMatcher1)
+                        .add(numLiteralMatcher2)
                         .add(singleQuoteStrLiteralMatcher)
                         .add(doubleQuoteStrLiteralMatcher)
                         .add(spaceMatcher)
