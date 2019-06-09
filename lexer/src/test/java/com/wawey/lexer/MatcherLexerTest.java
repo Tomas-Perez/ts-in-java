@@ -88,7 +88,7 @@ public class MatcherLexerTest {
         Assert.assertEquals(idExpected, idFirstLexer.lex("let"));
     }
 
-    @Test(expected = LexicalError.class)
+    @Test(expected = UnknownCharacterException.class)
     public void baseLexerShouldThrowLexicalErrorWhenGivenAnything() {
         Lexer baseLexer = new MatcherLexer();
         baseLexer.lex("a");

@@ -22,7 +22,7 @@ public class AutomataParser implements Parser {
                 automata.consume(t);
             } catch (NoTransitionException exc) {
                 if (exc.getToken().getType() == TokenType.EOF) {
-                    throw new UnexpectedEndOfFileException();
+                    throw new UnexpectedEndOfFileException(exc.getToken().getLine(), exc.getToken().getStartColumn());
                 } else {
                     throw new UnexpectedTokenException(exc.getToken());
                 }

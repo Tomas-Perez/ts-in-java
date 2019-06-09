@@ -36,7 +36,7 @@ public class MatcherLexer implements Lexer {
                         .filter(m -> m.match(c))
                         .collect(Collectors.toList());
                 if (matchersForChar.size() == 0 && (alreadyMatching.size() == 0 || noPreviousMatch)) {
-                    throw new LexicalError("Unknown character: " + c);
+                    throw new UnknownCharacterException(c, state.line, state.column);
                 } else if (matchersForChar.size() == 0) {
                     Token token = buildToken(state.line, state.column, alreadyMatching);
                     state = state.addToken(token);

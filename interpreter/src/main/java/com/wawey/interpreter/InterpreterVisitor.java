@@ -43,28 +43,44 @@ public class InterpreterVisitor implements ASTVisitor<Void> {
                 printer.print(children.get(0).accept(expressionVisitor).getString());
                 break;
             case COVER_INITIALIZED_NAME: {
-                String identifier = ((TerminalNode) children.get(0)).getValue();
-                NonTerminalNode initializer = ((NonTerminalNode) children.get(1));
-                variableDeclarator.setVariableValue(identifier, initializer.getChildren().get(0).accept(expressionVisitor));
+                try {
+                    String identifier = ((TerminalNode) children.get(0)).getValue();
+                    NonTerminalNode initializer = ((NonTerminalNode) children.get(1));
+                    variableDeclarator.setVariableValue(identifier, initializer.getChildren().get(0).accept(expressionVisitor));
+                } catch (InterpreterException exc) {
+                    throw new LocatedInterpreterException(
+                            exc,
+                            nonTerminal.getStartLine(),
+                            nonTerminal.getColumnRanges().get(0).getColumnRange().getStart()
+                    );
+                }
                 break;
             }
             case VARIABLE_DECLARATION:
-                String identifier = ((TerminalNode) children.get(0)).getValue();
-                if (children.size() == 1) {
-                    variableDeclarator.declareVariable(identifier);
-                } else if (children.get(1).getRule() == Rule.INITIALIZER) {
-                    NonTerminalNode initializer = ((NonTerminalNode) children.get(1));
-                    Value value = initializer.getChildren().get(0).accept(expressionVisitor);
-                    variableDeclarator.declareVariable(identifier);
-                    variableDeclarator.setVariableValue(identifier, value);
-                } else {
-                    NonTerminalNode typeAnnotation = ((NonTerminalNode) children.get(1));
-                    variableDeclarator.declareVariable(identifier, typeAnnotation.accept(typeAnnotationVisitor));
-                    if (children.size() == 3) {
-                        NonTerminalNode initializer = ((NonTerminalNode) children.get(2));
+                try {
+                    String identifier = ((TerminalNode) children.get(0)).getValue();
+                    if (children.size() == 1) {
+                        variableDeclarator.declareVariable(identifier);
+                    } else if (children.get(1).getRule() == Rule.INITIALIZER) {
+                        NonTerminalNode initializer = ((NonTerminalNode) children.get(1));
                         Value value = initializer.getChildren().get(0).accept(expressionVisitor);
+                        variableDeclarator.declareVariable(identifier);
                         variableDeclarator.setVariableValue(identifier, value);
+                    } else {
+                        NonTerminalNode typeAnnotation = ((NonTerminalNode) children.get(1));
+                        variableDeclarator.declareVariable(identifier, typeAnnotation.accept(typeAnnotationVisitor));
+                        if (children.size() == 3) {
+                            NonTerminalNode initializer = ((NonTerminalNode) children.get(2));
+                            Value value = initializer.getChildren().get(0).accept(expressionVisitor);
+                            variableDeclarator.setVariableValue(identifier, value);
+                        }
                     }
+                } catch (InterpreterException exc) {
+                    throw new LocatedInterpreterException(
+                            exc,
+                            nonTerminal.getStartLine(),
+                            nonTerminal.getColumnRanges().get(0).getColumnRange().getStart()
+                    );
                 }
                 break;
             default:
