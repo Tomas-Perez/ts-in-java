@@ -4,7 +4,7 @@ import com.wawey.lexer.TokenType;
 import com.wawey.parser.Rule;
 import com.wawey.parser.ast.StringTypeNode;
 
-public class StringTypeAutomata extends TerminalNodeParser {
+public class StringTypeAutomata extends TerminalNodeAutomata {
 
     public StringTypeAutomata() {
         super(

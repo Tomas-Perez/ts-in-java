@@ -1,8 +1,6 @@
 package com.wawey.parser.ast;
 
-import com.wawey.parser.LineColumnRangePair;
-import com.wawey.parser.Range;
-import com.wawey.parser.Rule;
+import com.wawey.parser.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,9 +57,9 @@ public class NonTerminalNode implements ASTNode {
     private LineColumnRangePair unifyRanges(int line, List<LineColumnRangePair> ranges) {
         return ranges.stream()
                 .reduce((r1, r2) ->
-                        new LineColumnRangePair(
+                        new LineColumnRangePairImpl(
                                 line,
-                                new Range(r1.getColumnRange().getStart(), r2.getColumnRange().getEnd())
+                                new RangeImpl(r1.getColumnRange().getStart(), r2.getColumnRange().getEnd())
                         ))
                 .get();
     }

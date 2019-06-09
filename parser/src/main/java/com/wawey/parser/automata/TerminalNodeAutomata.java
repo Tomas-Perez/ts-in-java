@@ -11,9 +11,9 @@ import java.util.function.Function;
 /**
  * @author Tomas Perez Molina
  */
-public class TerminalNodeParser extends ParserAutomataImpl {
+public class TerminalNodeAutomata extends ParserAutomataImpl {
 
-    public TerminalNodeParser(Rule rule, TokenType tokenType, Function<Token, ASTNode> nodeMapper) {
+    public TerminalNodeAutomata(Rule rule, TokenType tokenType, Function<Token, ASTNode> nodeMapper) {
         super(rule, new InitialState(tokenType, nodeMapper));
     }
 

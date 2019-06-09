@@ -31,10 +31,12 @@ public class Main {
 
 
         LexerFactory lexerFactory = new LexerFactory();
+        ParserFactory parserFactory = new ParserFactory();
+        InterpreterFactory interpreterFactory = new InterpreterFactory();
 
         Lexer lexer = lexerFactory.getTSLexer();
-        Parser parser = ParserFactory.getTSParser();
-        Interpreter interpreter = InterpreterFactory.getTSInterpreter(new StandardOutPrinter());
+        Parser parser = parserFactory.getTSParser();
+        Interpreter interpreter = interpreterFactory.getTSInterpreter(new StandardOutPrinter());
 
         try {
             List<Token> tokens = lexer.lex(input);

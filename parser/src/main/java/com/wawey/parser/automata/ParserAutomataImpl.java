@@ -13,11 +13,9 @@ public class ParserAutomataImpl implements ParserAutomata {
     private final Rule rule;
     protected ImmutableStack<ASTNode> stack = LinkedImmutableStack.empty();
     private ParserAutomataState currentState;
-    private final ParserAutomataState initialState;
 
     public ParserAutomataImpl(Rule rule, ParserAutomataState initialState) {
         this.rule = rule;
-        this.initialState = initialState;
         this.currentState = initialState;
     }
 
@@ -31,11 +29,6 @@ public class ParserAutomataImpl implements ParserAutomata {
     @Override
     public ASTNode getResult() {
         return new NonTerminalNode(rule, new LinkedList<>(stack.toList()));
-    }
-
-    @Override
-    public void reset() {
-        currentState = initialState;
     }
 
     @Override

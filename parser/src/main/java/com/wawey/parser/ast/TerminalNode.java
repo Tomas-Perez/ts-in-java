@@ -1,8 +1,6 @@
 package com.wawey.parser.ast;
 
-import com.wawey.parser.LineColumnRangePair;
-import com.wawey.parser.Range;
-import com.wawey.parser.Rule;
+import com.wawey.parser.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +14,7 @@ public class TerminalNode implements ASTNode {
     public TerminalNode(Rule rule, int line, int startColumn, String value) {
         this.rule = rule;
         this.value = value;
-        this.lineColumnRangePair = new LineColumnRangePair(line, new Range(startColumn, startColumn + value.length()));
+        this.lineColumnRangePair = new LineColumnRangePairImpl(line, new RangeImpl(startColumn, startColumn + value.length()));
     }
 
     @Override

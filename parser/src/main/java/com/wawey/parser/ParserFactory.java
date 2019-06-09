@@ -6,7 +6,7 @@ import com.wawey.parser.automata.FileAutomata;
  * @author Tomas Perez Molina
  */
 public class ParserFactory {
-    public static Parser getTSParser() {
+    public Parser getTSParser() {
         return new AutomataParser(new FileAutomata());
     }
 }

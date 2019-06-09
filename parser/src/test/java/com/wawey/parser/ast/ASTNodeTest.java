@@ -1,7 +1,7 @@
 package com.wawey.parser.ast;
 
-import com.wawey.parser.LineColumnRangePair;
-import com.wawey.parser.Range;
+import com.wawey.parser.LineColumnRangePairImpl;
+import com.wawey.parser.RangeImpl;
 import com.wawey.parser.Rule;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +14,7 @@ public class ASTNodeTest {
     public void terminalRangeShouldEncompassItsValue() {
         ASTNode terminal = new TerminalNode(anyRule(), 1, 1, "ads");
         Assert.assertEquals(
-                Collections.singletonList(new LineColumnRangePair(1, new Range(1, 4))),
+                Collections.singletonList(new LineColumnRangePairImpl(1, new RangeImpl(1, 4))),
                 terminal.getColumnRanges()
         );
     }
@@ -25,7 +25,7 @@ public class ASTNodeTest {
         ASTNode terminal2 = new TerminalNode(anyRule(), 1, 5, "ads");
         ASTNode nonTerminal = new NonTerminalNode(anyRule(), terminal1, terminal2);
         Assert.assertEquals(
-                Collections.singletonList(new LineColumnRangePair(1, new Range(1, 8))),
+                Collections.singletonList(new LineColumnRangePairImpl(1, new RangeImpl(1, 8))),
                 nonTerminal.getColumnRanges()
         );
     }
@@ -37,8 +37,8 @@ public class ASTNodeTest {
         ASTNode nonTerminal = new NonTerminalNode(anyRule(), terminal1, terminal2);
         Assert.assertEquals(
                 Arrays.asList(
-                        new LineColumnRangePair(1, new Range(1, 4)),
-                        new LineColumnRangePair(2, new Range(1, 4))
+                        new LineColumnRangePairImpl(1, new RangeImpl(1, 4)),
+                        new LineColumnRangePairImpl(2, new RangeImpl(1, 4))
                 ),
                 nonTerminal.getColumnRanges()
         );
