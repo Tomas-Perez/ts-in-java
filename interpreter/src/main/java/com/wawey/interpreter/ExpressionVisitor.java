@@ -17,50 +17,58 @@ public class ExpressionVisitor implements ASTVisitor<Value> {
 
     @Override
     public Value visit(NonTerminalNode nonTerminal) {
-        switch (nonTerminal.getRule()) {
-            case LITERAL:
-            case IDENTIFIER:
-            case PRIMARY_EXPRESSION:
-            case MULTIPLICATIVE_EXPRESSION:
-            case ADDITIVE_EXPRESSION:
-                return nonTerminal.getChildren().get(0).accept(this);
-            case SUM_EXPRESSION: {
-                ASTNode left = nonTerminal.getChildren().get(0);
-                ASTNode right = nonTerminal.getChildren().get(1);
-                return left.accept(this).sum(right.accept(this));
+        try {
+            switch (nonTerminal.getRule()) {
+                case LITERAL:
+                case IDENTIFIER:
+                case PRIMARY_EXPRESSION:
+                case MULTIPLICATIVE_EXPRESSION:
+                case ADDITIVE_EXPRESSION:
+                    return nonTerminal.getChildren().get(0).accept(this);
+                case SUM_EXPRESSION: {
+                    ASTNode left = nonTerminal.getChildren().get(0);
+                    ASTNode right = nonTerminal.getChildren().get(1);
+                    return left.accept(this).sum(right.accept(this));
+                }
+                case SUBTRACT_EXPRESSION: {
+                    ASTNode left = nonTerminal.getChildren().get(0);
+                    ASTNode right = nonTerminal.getChildren().get(1);
+                    return left.accept(this).subtract(right.accept(this));
+                }
+                case MULTIPLY_EXPRESSION: {
+                    ASTNode left = nonTerminal.getChildren().get(0);
+                    ASTNode right = nonTerminal.getChildren().get(1);
+                    return left.accept(this).multiply(right.accept(this));
+                }
+                case DIVIDE_EXPRESSION: {
+                    ASTNode left = nonTerminal.getChildren().get(0);
+                    ASTNode right = nonTerminal.getChildren().get(1);
+                    return left.accept(this).divide(right.accept(this));
+                }
+                default:
+                    throw new NotAnExpressionException(nonTerminal);
             }
-            case SUBTRACT_EXPRESSION: {
-                ASTNode left = nonTerminal.getChildren().get(0);
-                ASTNode right = nonTerminal.getChildren().get(1);
-                return left.accept(this).subtract(right.accept(this));
-            }
-            case MULTIPLY_EXPRESSION: {
-                ASTNode left = nonTerminal.getChildren().get(0);
-                ASTNode right = nonTerminal.getChildren().get(1);
-                return left.accept(this).multiply(right.accept(this));
-            }
-            case DIVIDE_EXPRESSION: {
-                ASTNode left = nonTerminal.getChildren().get(0);
-                ASTNode right = nonTerminal.getChildren().get(1);
-                return left.accept(this).divide(right.accept(this));
-            }
-            default:
-                throw new NotAnExpressionException(nonTerminal);
+        } catch (InterpreterException exc) {
+            throw new LocatedInterpreterException(exc, nonTerminal.getStartLine(), nonTerminal.getColumnRanges().get(0).getColumnRange().getStart());
         }
     }
 
     @Override
     public Value visit(TerminalNode terminal) {
-        switch (terminal.getRule()) {
-            case IDENTIFIER:
-                return pool.getVariable(terminal.getValue());
-            case NUMBER_LITERAL:
-                return new NumberValue(Double.parseDouble(terminal.getValue()));
-            case STRING_LITERAL:
-                String value = terminal.getValue();
-                return new StringValue(value.substring(1, value.length() - 1));
-            default:
-                throw new NotAnExpressionException(terminal);
+        try {
+            switch (terminal.getRule()) {
+                case IDENTIFIER:
+                    return pool.getVariable(terminal.getValue());
+                case NUMBER_LITERAL:
+                    return new NumberValue(Double.parseDouble(terminal.getValue()));
+                case STRING_LITERAL:
+                    String value = terminal.getValue();
+                    return new StringValue(value.substring(1, value.length() - 1));
+                default:
+                    throw new NotAnExpressionException(terminal);
+            }
+        } catch (InterpreterException exc) {
+            throw new LocatedInterpreterException(exc, terminal.getStartLine(), terminal.getColumnRanges().get(0).getColumnRange().getStart());
         }
     }
 }
